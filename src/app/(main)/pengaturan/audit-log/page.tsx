@@ -23,7 +23,7 @@ export default function AuditLogPage() {
   const [detailData, setDetailData] = useState<any | null>(null);
   const [mounted, setMounted] = useState(false);
 
-  const fetchData = async () => {
+    const fetchData = async () => {
     setLoading(true);
     try {
       const res = await auditLogService.getAll();
@@ -94,31 +94,36 @@ export default function AuditLogPage() {
   };
 
   return (
-    <div className="flex flex-col h-full p-4 overflow-hidden">
-      <Breadcrumb style={{ marginBottom: 16 }} className="shrink-0" items={[{ title: 'System' }, { title: 'Audit Logs' }]} />
+    <div className="flex flex-col flex-1 min-h-0 bg-slate-50 p-4 pt-2 relative">
+      <div className="mb-2 text-gray-500 text-sm">
+        <Breadcrumb items={[{ title: 'Pengaturan' }, { title: 'Audit Logs' }]} />
+      </div>
       
       <ToolbarWrapper>
-        <ButtonToolbar message="Refresh" icon={<ReloadOutlined />} onClick={fetchData} />
-        <ButtonToolbar message="Export Excel" icon={<DownloadOutlined />} onClick={exportToExcel} enable={data.length > 0} />
-        <ButtonToolbar message="View Detail" icon={<EyeOutlined />} onClick={handleDetail} enable={selectedRowKeys.length === 1} />
+        <span className="text-white font-bold leading-tight flex-1 mr-4">Riwayat Aktivitas Sistem (Audit Logs)</span>
+        <ButtonToolbar message="Refresh Data" icon={<ReloadOutlined />} onClick={fetchData} />
+        <ButtonToolbar message="Export ke Excel" icon={<DownloadOutlined />} onClick={exportToExcel} enable={data.length > 0} />
+        <ButtonToolbar message="Lihat Detail" icon={<EyeOutlined />} onClick={handleDetail} enable={selectedRowKeys.length === 1} />
       </ToolbarWrapper>
 
-      {mounted && (
-        <>
-          <AuditLogTable 
-            data={data}
-            loading={loading}
-            selectedRowKeys={selectedRowKeys}
-            setSelectedRowKeys={setSelectedRowKeys}
-          />
+      <div className="data-induk-table-wrapper bg-white px-4 pb-4 pt-1 mt-1 rounded-lg shadow-sm border border-gray-100 flex-1 flex flex-col min-h-0">
+        {mounted && (
+          <>
+            <AuditLogTable 
+              data={data}
+              loading={loading}
+              selectedRowKeys={selectedRowKeys}
+              setSelectedRowKeys={setSelectedRowKeys}
+            />
 
-          <AuditLogDetailModal 
-            isDetailModalVisible={isDetailModalVisible}
-            setIsDetailModalVisible={setIsDetailModalVisible}
-            detailData={detailData}
-          />
-        </>
-      )}
+            <AuditLogDetailModal 
+              isDetailModalVisible={isDetailModalVisible}
+              setIsDetailModalVisible={setIsDetailModalVisible}
+              detailData={detailData}
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 }

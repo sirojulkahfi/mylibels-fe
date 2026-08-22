@@ -99,6 +99,28 @@ export default function SiswaModal({
             <Option value="Pindah">Pindah</Option>
           </Select>
         </Form.Item>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Form.Item
+            name="parentName"
+            label="Nama Orang Tua/Wali"
+          >
+            <Input placeholder="Masukkan nama orang tua/wali" />
+          </Form.Item>
+          <Form.Item
+            name="parentPhone"
+            label="No. Telepon Orang Tua"
+          >
+            <Input placeholder="Masukkan nomor telepon" />
+          </Form.Item>
+        </div>
+
+        <Form.Item
+          name="address"
+          label="Alamat Lengkap"
+        >
+          <Input.TextArea rows={3} placeholder="Masukkan alamat lengkap siswa" />
+        </Form.Item>
       </Form>
     </Modal>
   );

@@ -1,9 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from '../api';
 
 export const siswaService = {
   findAll: async () => {
     const response = await api.get('/data-induk/siswa');
+    return response.data;
+  },
+  findOne: async (id: string) => {
+    const response = await api.get(`/data-induk/siswa/${id}`);
     return response.data;
   },
   create: async (data: any) => {

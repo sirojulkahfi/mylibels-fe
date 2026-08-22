@@ -32,7 +32,7 @@ export default function KelasPage() {
   const [form] = Form.useForm();
   const router = useRouter();
 
-  const fetchData = async () => {
+    const fetchData = async () => {
     try {
       setLoading(true);
       const [res, waliKelasRes] = await Promise.all([

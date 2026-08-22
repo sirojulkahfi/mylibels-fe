@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Space, Tooltip, Popconfirm, message, Modal, Form, Input, Select } from 'antd';
+import { Table, Tag, Space, Tooltip, Popconfirm, Modal, Form, Input, Select, App } from 'antd';
 import { PlusOutlined, ReloadOutlined, ExportOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
 import ButtonToolbar from '@/components/ui/ButtonToolbar';
@@ -23,6 +23,7 @@ interface GuruStafData {
 }
 
 export default function GuruStafPage() {
+  const { message } = App.useApp();
   const [data, setData] = useState<GuruStafData[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -31,7 +32,7 @@ export default function GuruStafPage() {
 
   const [mapelData, setMapelData] = useState<any[]>([]);
 
-  const fetchData = async () => {
+    const fetchData = async () => {
     try {
       setLoading(true);
       const res = await guruStafService.findAll();
@@ -44,7 +45,7 @@ export default function GuruStafPage() {
     }
   };
 
-  const fetchMapel = async () => {
+    const fetchMapel = async () => {
     try {
       const res = await mataPelajaranService.findAll();
       setMapelData(res);

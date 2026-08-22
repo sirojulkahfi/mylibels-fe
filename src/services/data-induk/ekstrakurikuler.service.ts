@@ -1,9 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from '../api';
 
 export const ekstrakurikulerService = {
   findAll: async () => {
     const response = await api.get('/data-induk/ekstrakurikuler');
+    return response.data;
+  },
+  findOne: async (id: string) => {
+    const response = await api.get(`/data-induk/ekstrakurikuler/${id}`);
     return response.data;
   },
   create: async (data: any) => {

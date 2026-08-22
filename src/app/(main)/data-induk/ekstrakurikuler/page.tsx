@@ -25,7 +25,7 @@ export default function EkstrakurikulerPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form] = Form.useForm();
 
-  const fetchData = async () => {
+    const fetchData = async () => {
     try {
       setLoading(true);
       const res = await ekstrakurikulerService.findAll();

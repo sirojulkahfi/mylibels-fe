@@ -29,7 +29,7 @@ export default function WaliKelasPage() {
 
   const [form] = Form.useForm();
 
-  const fetchData = async () => {
+    const fetchData = async () => {
     setLoading(true);
     try {
       const [res, guruStafRes, kelasRes] = await Promise.all([

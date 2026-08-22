@@ -24,12 +24,10 @@ export default function LoginPage() {
   const [appVersion, setAppVersion] = useState("1.0.0");
 
   useEffect(() => {
-    const fetchSettings = async () => {
+        const fetchSettings = async () => {
       try {
         const res = await settingsService.findAll();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const list = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const versionSetting = list.find((s: any) => s.key === "VERSION" || s.key === "APP_VERSION");
         if (versionSetting) {
           setAppVersion(versionSetting.value);
@@ -73,7 +71,6 @@ export default function LoginPage() {
       } else {
         router.push('/dashboard'); // Fallback
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.response?.data?.message || "Terjadi kesalahan pada server. Pastikan username/password benar.");
     } finally {

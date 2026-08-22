@@ -14,12 +14,12 @@ export default function PlottingSiswaPage() {
 
   const [kelas, setKelas] = useState<any>(null);
   const [allSiswa, setAllSiswa] = useState<any[]>([]);
-  const [targetKeys, setTargetKeys] = useState<string[]>([]);
+  const [targetKeys, setTargetKeys] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+        const fetchData = async () => {
       try {
         setLoading(true);
         // Fetch class detail
@@ -52,8 +52,8 @@ export default function PlottingSiswaPage() {
     if (id) fetchData();
   }, [id, router]);
 
-  const handleChange = (newTargetKeys: string[]) => {
-    setTargetKeys(newTargetKeys);
+  const handleChange = (newTargetKeys: React.Key[]) => {
+    setTargetKeys(newTargetKeys as any[]);
   };
 
   const handleSave = async () => {
@@ -151,8 +151,7 @@ export default function PlottingSiswaPage() {
             targetKeys={targetKeys}
             onChange={handleChange}
             render={renderItem}
-            searchPlaceholder="Cari nama atau NISN siswa..."
-            notFoundContent="Siswa tidak ditemukan"
+            locale={{ searchPlaceholder: 'Cari nama atau NISN siswa...', notFoundContent: 'Siswa tidak ditemukan' }}
           />
         </div>
         

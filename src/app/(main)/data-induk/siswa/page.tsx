@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Space, Tooltip, Popconfirm, message, Modal, Form, Input, Select, Radio } from 'antd';
+import { Table, Tag, Space, Tooltip, Popconfirm, Modal, Form, Input, Select, Radio, App } from 'antd';
 import { useRouter } from 'next/navigation';
 import { PlusOutlined, ReloadOutlined, ExportOutlined, ImportOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
@@ -21,9 +21,13 @@ interface SiswaData {
   gender: 'Laki-laki' | 'Perempuan';
   class: string;
   status: 'Aktif' | 'Lulus' | 'Pindah';
+  parentName?: string;
+  parentPhone?: string;
+  address?: string;
 }
 
 export default function SiswaPage() {
+  const { message } = App.useApp();
   const [data, setData] = useState<SiswaData[]>([]);
   const [kelasData, setKelasData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -32,7 +36,7 @@ export default function SiswaPage() {
   const [form] = Form.useForm();
   const router = useRouter();
 
-  const fetchData = async () => {
+    const fetchData = async () => {
     try {
       setLoading(true);
       const res = await siswaService.findAll();
@@ -45,7 +49,7 @@ export default function SiswaPage() {
     }
   };
 
-  const fetchKelas = async () => {
+    const fetchKelas = async () => {
     try {
       const res = await kelasService.findAll();
       setKelasData(res);
@@ -256,6 +260,26 @@ export default function SiswaPage() {
           columns={columns} 
           dataSource={data} 
           rowKey="id"
+          expandable={{
+            expandedRowRender: (record) => (
+              <div className="bg-blue-50/50 p-4 border border-blue-100 rounded-lg ml-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-semibold text-gray-600 block mb-1">Nama Orang Tua / Wali:</span>
+                    <span className="text-gray-800">{record.parentName || <span className="text-gray-400 italic">Belum diisi</span>}</span>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-gray-600 block mb-1">No. Telepon Orang Tua:</span>
+                    <span className="text-gray-800">{record.parentPhone || <span className="text-gray-400 italic">Belum diisi</span>}</span>
+                  </div>
+                  <div className="col-span-1 md:col-span-2">
+                    <span className="font-semibold text-gray-600 block mb-1">Alamat Rumah:</span>
+                    <span className="text-gray-800">{record.address || <span className="text-gray-400 italic">Belum diisi</span>}</span>
+                  </div>
+                </div>
+              </div>
+            ),
+          }}
           pagination={{ 
               defaultPageSize: 10, 
             showSizeChanger: true, hideOnSinglePage: false, 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -36,7 +35,7 @@ export default function SystemSettingsPage() {
 
     const canManage = hasPermission('MANAGE_SETTINGS');
 
-    const fetchData = async () => {
+        const fetchData = async () => {
         setLoading(true);
         try {
             const res = await settingsService.findAll();
@@ -52,7 +51,6 @@ export default function SystemSettingsPage() {
     useEffect(() => {
         setTimeout(() => setMounted(true), 0);
         setTimeout(() => fetchData(), 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
     const searchInput = useRef<InputRef>(null);
@@ -141,63 +139,67 @@ export default function SystemSettingsPage() {
                         setTimeout(() => fetchData(), 0);
                     } catch (error: any) {
                         message.error(error.response?.data?.message || 'Failed to delete setting');
+                        message.error(error.response?.data?.message || 'Failed to delete setting');
                     }
                 },
             });
         }
     };
 
-    return (
-    <div className="flex flex-col h-full p-4 overflow-hidden">
-            <Breadcrumb style={{ marginBottom: 16 }} className="shrink-0" items={[{ title: 'System' }, { title: 'System Settings' }]} />
-            
-            <ToolbarWrapper>
-                <ButtonToolbar message="Refresh" icon={<ReloadOutlined />} onClick={fetchData} />
-                {canManage && <ButtonToolbar message="Create" icon={<PlusOutlined />} onClick={() => setIsCreateModalVisible(true)} />}
-                {canManage && <ButtonToolbar message="Edit" icon={<EditOutlined />} onClick={handleEdit} enable={selectedRowKeys.length === 1} />}
-                {canManage && <ButtonToolbar message="Delete" icon={<DeleteOutlined />} onClick={handleDelete} enable={selectedRowKeys.length === 1} />}
-            </ToolbarWrapper>
-
-            {mounted && (
-                <>
-                    <div className="flex-1 overflow-hidden mt-2">
-        <Table
-        pagination={{ defaultPageSize: 50, showSizeChanger: true, pageSizeOptions: ['50', '80', '100'], showTotal: (total, range) => `${range[0]}-${range[1]} dari ${total} data` }}
-        scroll={{ y: 'calc(100vh - 280px)' }}
-                        rowSelection={{
-                            selectedRowKeys,
-                            onChange: (keys) => setSelectedRowKeys(keys),
-                            checkStrictly: true,
-                            type: 'radio',
-                        }}
-                        columns={columns}
-                        dataSource={data}
-                        size="small"
-                        loading={loading}
-                        
-                        rowKey="id"
-                        
-                        className="small-table"
-                        style={{ fontSize: '11px' }}
-                    />
+  return (
+    <div className="flex flex-col flex-1 min-h-0 bg-slate-50 p-4 pt-2 relative">
+      <div className="mb-2 text-gray-500 text-sm">
+        <Breadcrumb items={[{ title: 'Pengaturan' }, { title: 'System Settings' }]} />
       </div>
+      
+      <ToolbarWrapper>
+        <span className="text-white font-bold leading-tight flex-1 mr-4">Pengaturan Sistem (Advanced)</span>
+        <ButtonToolbar message="Refresh Data" icon={<ReloadOutlined />} onClick={fetchData} />
+        {canManage && <ButtonToolbar message="Tambah Setting" icon={<PlusOutlined />} onClick={() => setIsCreateModalVisible(true)} />}
+        {canManage && <ButtonToolbar message="Edit Setting" icon={<EditOutlined />} onClick={handleEdit} enable={selectedRowKeys.length === 1} />}
+        {canManage && <ButtonToolbar message="Hapus Setting" icon={<DeleteOutlined />} onClick={handleDelete} enable={selectedRowKeys.length === 1} />}
+      </ToolbarWrapper>
 
-                    <ModalCreate
-                        visible={isCreateModalVisible}
-                        onClose={() => setIsCreateModalVisible(false)}
-                        onSuccess={fetchData}
-                    />
+      <div className="data-induk-table-wrapper bg-white px-4 pb-4 pt-1 mt-1 rounded-lg shadow-sm border border-gray-100 flex-1 flex flex-col min-h-0">
+        {mounted && (
+          <>
+            <div className="flex-1 overflow-hidden mt-2">
+              <Table
+                pagination={{ defaultPageSize: 50, showSizeChanger: true, pageSizeOptions: ['50', '80', '100'], showTotal: (total, range) => `${range[0]}-${range[1]} dari ${total} data` }}
+                scroll={{ y: 'calc(100vh - 280px)' }}
+                rowSelection={{
+                  selectedRowKeys,
+                  onChange: (keys) => setSelectedRowKeys(keys),
+                  checkStrictly: true,
+                  type: 'radio',
+                }}
+                columns={columns}
+                dataSource={data}
+                size="small"
+                loading={loading}
+                rowKey="id"
+                className="small-table"
+                style={{ fontSize: '11px' }}
+              />
+            </div>
 
-                    {editData && (
-                        <ModalUpdate
-                            visible={isEditModalVisible}
-                            onClose={() => setIsEditModalVisible(false)}
-                            onSuccess={fetchData}
-                            data={editData}
-                        />
-                    )}
-                </>
+            <ModalCreate
+              visible={isCreateModalVisible}
+              onClose={() => setIsCreateModalVisible(false)}
+              onSuccess={fetchData}
+            />
+
+            {editData && (
+              <ModalUpdate
+                visible={isEditModalVisible}
+                onClose={() => setIsEditModalVisible(false)}
+                onSuccess={fetchData}
+                data={editData}
+              />
             )}
-        </div>
+          </>
+        )}
+      </div>
+    </div>
   );
 }

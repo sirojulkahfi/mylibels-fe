@@ -98,12 +98,7 @@
   --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* Dark mode removed to prevent text color conflicts with light-themed components */
 
 
 @layer utilities {
@@ -124,8 +119,16 @@
 
 .ant-table table {
   font-size: var(--table-font-size);
+  color: var(--color-text-primary);
 }
 
+.ant-table-tbody > tr > td {
+  color: var(--color-text-primary) !important;
+}
+
+.ant-table-thead > tr > th {
+  color: var(--color-text-secondary) !important;
+}
 /* Hide scrollbars on all elements */
 .hidden-scrollbar {
   -ms-overflow-style: none;

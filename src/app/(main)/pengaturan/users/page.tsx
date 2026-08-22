@@ -37,7 +37,7 @@ export default function SystemUsersPage() {
   const canEdit = hasPermission('EDIT_USER');
   const canDelete = hasPermission('DELETE_USER');
 
-  const fetchData = async () => {
+    const fetchData = async () => {
     try {
       setLoading(true);
       const res = await systemUserService.getAll();
@@ -129,35 +129,40 @@ export default function SystemUsersPage() {
   };
 
   return (
-    <div className="flex flex-col h-full p-4 overflow-hidden">
-      <Breadcrumb style={{ marginBottom: 16 }} className="shrink-0" items={[{ title: 'System' }, { title: 'Users' }]} />
+    <div className="flex flex-col flex-1 min-h-0 bg-slate-50 p-4 pt-2 relative">
+      <div className="mb-2 text-gray-500 text-sm">
+        <Breadcrumb items={[{ title: 'Pengaturan' }, { title: 'Manajemen Users' }]} />
+      </div>
       
       <ToolbarWrapper>
-        <ButtonToolbar message="Refresh" icon={<ReloadOutlined />} onClick={fetchData} />
-        {canCreate && <ButtonToolbar message="Create" icon={<PlusOutlined />} onClick={openAddModal} />}
-        {canEdit && <ButtonToolbar message="Edit" icon={<EditOutlined />} onClick={openEditModal} enable={selectedRowKeys.length === 1} />}
-        {canDelete && <ButtonToolbar message="Delete" icon={<DeleteOutlined />} onClick={handleDelete} enable={selectedRowKeys.length > 0 && selectedRowKeys[0] !== user?.id} />}
+        <span className="text-white font-bold leading-tight flex-1 mr-4">Daftar Pengguna Sistem</span>
+        <ButtonToolbar message="Refresh Data" icon={<ReloadOutlined />} onClick={fetchData} />
+        {canCreate && <ButtonToolbar message="Tambah User" icon={<PlusOutlined />} onClick={openAddModal} />}
+        {canEdit && <ButtonToolbar message="Edit User" icon={<EditOutlined />} onClick={openEditModal} enable={selectedRowKeys.length === 1} />}
+        {canDelete && <ButtonToolbar message="Hapus User" icon={<DeleteOutlined />} onClick={handleDelete} enable={selectedRowKeys.length > 0 && selectedRowKeys[0] !== user?.id} />}
       </ToolbarWrapper>
 
-      {mounted && (
-        <>
-          <UserTable
-            data={data}
-            loading={loading}
-            selectedRowKeys={selectedRowKeys}
-            setSelectedRowKeys={setSelectedRowKeys}
-          />
-          <UserModal
-            isModalOpen={isModalOpen}
-            setIsModalOpen={setIsModalOpen}
-            form={form}
-            handleSubmit={handleSubmit}
-            editingId={editingId}
-            karyawans={karyawans}
-            roles={roles}
-          />
-        </>
-      )}
+      <div className="data-induk-table-wrapper bg-white px-4 pb-4 pt-1 mt-1 rounded-lg shadow-sm border border-gray-100 flex-1 flex flex-col min-h-0">
+        {mounted && (
+          <>
+            <UserTable
+              data={data}
+              loading={loading}
+              selectedRowKeys={selectedRowKeys}
+              setSelectedRowKeys={setSelectedRowKeys}
+            />
+            <UserModal
+              isModalOpen={isModalOpen}
+              setIsModalOpen={setIsModalOpen}
+              form={form}
+              handleSubmit={handleSubmit}
+              editingId={editingId}
+              karyawans={karyawans}
+              roles={roles}
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 }

@@ -52,6 +52,8 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
 
     const getOpenKeys = () => {
         if (pathname.includes('/data-induk')) return ['data-induk'];
+        if (pathname.includes('/akademik')) return ['akademik'];
+        if (pathname.includes('/rapor')) return ['rapor'];
         if (pathname.includes('/pengaturan')) return ['pengaturan'];
         return [];
     };
@@ -76,6 +78,15 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
             ]));
         }
 
+        // 3. Akademik
+        if (hasPermission('VIEW_AKADEMIK') || user?.role?.name === 'ADMIN') {
+            items.push(getItem('Akademik', 'akademik', <DatabaseOutlined />, [
+                getItem(<Link href="/akademik/jadwal-pelajaran">Jadwal Pelajaran</Link>, '/akademik/jadwal-pelajaran'),
+                getItem(<Link href="/akademik/capaian-pembelajaran">Capaian Pembelajaran</Link>, '/akademik/capaian-pembelajaran'),
+                getItem(<Link href="/akademik/pembagian-tugas">Pembagian Tugas</Link>, '/akademik/pembagian-tugas')
+            ]));
+        }
+
         // 3. Penilaian
         if (hasPermission('VIEW_PENILAIAN') || user?.role?.name === 'ADMIN') {
             items.push(getItem('Penilaian', 'penilaian', <CheckSquareOutlined />, [
@@ -90,6 +101,7 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
         // 4. Presensi
         if (hasPermission('VIEW_PRESENSI') || user?.role?.name === 'ADMIN') {
             items.push(getItem('Presensi', 'presensi', <CheckSquareOutlined />, [
+                getItem(<Link href="/presensi">Dashboard</Link>, '/presensi'),
                 getItem(<Link href="/presensi/harian-siswa">Harian Siswa</Link>, '/presensi/harian-siswa'),
                 getItem(<Link href="/presensi/mapel-siswa">Mapel Siswa</Link>, '/presensi/mapel-siswa'),
                 getItem(<Link href="/presensi/presensi-guru">Kehadiran Guru</Link>, '/presensi/presensi-guru'),
@@ -109,9 +121,10 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
         // 6. Rapor
         if (hasPermission('VIEW_RAPOR') || user?.role?.name === 'ADMIN') {
             items.push(getItem('Rapor', 'rapor', <DatabaseOutlined />, [
-                getItem(<Link href="/rapor/cetak">Cetak Rapor</Link>, '/rapor/cetak'),
-                getItem(<Link href="/rapor/catatan-kenaikan">Catatan Kenaikan</Link>, '/rapor/catatan-kenaikan'),
-                getItem(<Link href="/rapor/validasi-kunci">Validasi & Kunci</Link>, '/rapor/validasi-kunci')
+                getItem(<Link href="/rapor">Dashboard Rapor</Link>, '/rapor'),
+                getItem(<Link href="/rapor/cetak/kelengkapan">Cetak Rapor</Link>, '/rapor/cetak/kelengkapan'),
+                getItem(<Link href="/rapor/catatan-kenaikan/vii-a">Catatan Kenaikan</Link>, '/rapor/catatan-kenaikan/vii-a'),
+                getItem(<Link href="/rapor/validasi-kunci/vii-a">Validasi & Kunci</Link>, '/rapor/validasi-kunci/vii-a')
             ]));
         }
 
