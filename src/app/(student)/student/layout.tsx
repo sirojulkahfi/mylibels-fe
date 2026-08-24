@@ -74,9 +74,9 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
                   unoptimized 
                 />
               </div>
-              <div className="hidden sm:block border-l-2 border-slate-300 pl-3">
-                <p className="text-[13px] text-slate-800 font-extrabold tracking-wide m-0">SMPN 15 BANDUNG</p>
-                <p className="text-[10px] text-slate-500 font-bold tracking-widest m-0 uppercase">Student Portal</p>
+              <div className="block border-l-2 border-slate-300 pl-2 sm:pl-3">
+                <p className="text-[11px] sm:text-[13px] text-slate-800 font-extrabold tracking-wide m-0 leading-tight">SMPN 15 BANDUNG</p>
+                <p className="text-[9px] sm:text-[10px] text-slate-500 font-bold tracking-widest m-0 uppercase mt-0.5">Student Portal</p>
               </div>
             </div>
 
