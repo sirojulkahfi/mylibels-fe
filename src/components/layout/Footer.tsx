@@ -22,7 +22,7 @@ export default function Footer() {
             <div className="text-white text-[11px] font-small drop-shadow-sm flex flex-col items-center leading-tight justify-center">
                 <span>Copyright © {new Date().getFullYear()} SMPN 15 Bandung</span>
                 <span className="text-[10px] text-white/80 mt-0.5">Sistem Informasi Management</span>
-                <span className="text-[9px] text-white/60 mt-1 italic">Aplikasi ini dikembangkan oleh Sirojul Kahfi (RJL DevOps)</span>
+                <span className="text-[9px] text-white/60 mt-1 italic">Aplikasi ini dikembangkan oleh Sirojul Kahpi (RJL DevOps)</span>
             </div>
         </AntFooter>
     );

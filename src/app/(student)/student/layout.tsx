@@ -5,11 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
-import { 
-  HomeOutlined, 
-  CalendarOutlined, 
-  CheckSquareOutlined, 
-  ReadOutlined, 
+import {
+  HomeOutlined,
+  CalendarOutlined,
+  CheckSquareOutlined,
+  ReadOutlined,
   SafetyCertificateOutlined,
   LogoutOutlined,
   MenuOutlined,
@@ -64,14 +64,14 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
             {/* Logo */}
             <div className="flex items-center gap-3 shrink-0">
               <div className="flex items-center">
-                <Image 
-                  src="/images/logo.webp" 
-                  alt="Logo" 
-                  width={110} 
-                  height={35} 
-                  className="object-contain" 
+                <Image
+                  src="/images/logo.webp"
+                  alt="Logo"
+                  width={110}
+                  height={35}
+                  className="object-contain"
                   style={{ filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.6)) drop-shadow(0px 0px 2px rgba(0,0,0,0.8))' }}
-                  unoptimized 
+                  unoptimized
                 />
               </div>
               <div className="block border-l-2 border-slate-300 pl-2 sm:pl-3">
@@ -85,14 +85,13 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
               {menuItems.map((item) => {
                 const isActive = pathname.startsWith(item.path);
                 return (
-                  <Link 
-                    key={item.path} 
+                  <Link
+                    key={item.path}
                     href={item.path}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                      isActive 
-                        ? 'bg-blue-50 text-blue-600' 
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${isActive
+                        ? 'bg-blue-50 text-blue-600'
                         : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                    }`}
+                      }`}
                   >
                     {item.icon}
                     <span>{item.name}</span>
@@ -115,12 +114,12 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
                   <DownOutlined className="text-slate-400 text-xs ml-1" />
                 </div>
               </Dropdown>
-              
+
               {/* Hamburger Button for Mobile */}
               <div className="lg:!hidden flex items-center">
-                <Button 
-                  type="text" 
-                  icon={mobileMenuOpen ? <CloseOutlined /> : <MenuOutlined />} 
+                <Button
+                  type="text"
+                  icon={mobileMenuOpen ? <CloseOutlined /> : <MenuOutlined />}
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                   className="flex items-center justify-center text-slate-600 hover:bg-slate-100 text-lg w-10 h-10"
                 />
@@ -136,15 +135,14 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
               {menuItems.map((item) => {
                 const isActive = pathname.startsWith(item.path);
                 return (
-                  <Link 
-                    key={item.path} 
+                  <Link
+                    key={item.path}
                     href={item.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-3 rounded-md text-base font-medium ${
-                      isActive 
-                        ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-600' 
+                    className={`flex items-center gap-3 px-3 py-3 rounded-md text-base font-medium ${isActive
+                        ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-600'
                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border-l-4 border-transparent'
-                    }`}
+                      }`}
                   >
                     {item.icon}
                     {item.name}
@@ -161,7 +159,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
                     <div className="text-sm text-slate-500">Siswa Aktif</div>
                   </div>
                 </div>
-                <button 
+                <button
                   onClick={handleLogout}
                   className="w-full flex items-center gap-3 px-4 py-3 text-base font-medium text-red-600 hover:bg-red-50 rounded-md transition-colors"
                 >
@@ -190,7 +188,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
               Sistem Informasi Management Sekolah - Student Portal
             </p>
             <p className="text-xs text-slate-400 mt-1 font-medium italic">
-              Aplikasi ini dikembangkan oleh Sirojul Kahfi (RJL DevOps)
+              Aplikasi ini dikembangkan oleh Sirojul Kahpi (RJL DevOps)
             </p>
           </div>
           <div className="flex gap-4">
