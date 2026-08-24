@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, Space, Tooltip, Popconfirm, message, Modal, Form, Input, InputNumber, Select } from 'antd';
 import { useRouter } from 'next/navigation';
 import { PlusOutlined, ReloadOutlined, ExportOutlined, EditOutlined, DeleteOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import axios from 'axios';
+import { useAuthStore } from '@/store/useAuthStore';
 import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
 import ButtonToolbar from '@/components/ui/ButtonToolbar';
 import { getColumnSearchProps } from '@/utils/tableUtils';
@@ -21,6 +23,8 @@ interface KelasData {
   homeroomTeacher: string;
   capacity: number;
   studentCount: number;
+  shiftId?: string;
+  shift?: { id: string; name: string };
 }
 
 export default function KelasPage() {
@@ -29,19 +33,25 @@ export default function KelasPage() {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [shiftList, setShiftList] = useState<any[]>([]);
   const [form] = Form.useForm();
   const router = useRouter();
+  const { token } = useAuthStore();
 
     const fetchData = async () => {
     try {
       setLoading(true);
-      const [res, waliKelasRes] = await Promise.all([
+      const [res, waliKelasRes, shiftRes] = await Promise.all([
         kelasService.findAll(),
-        waliKelasService.findAll()
+        waliKelasService.findAll(),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'}/system/shift`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }).catch(() => ({ data: [] }))
       ]);
       setData(res);
       const wkList = Array.isArray(waliKelasRes?.data) ? waliKelasRes.data : Array.isArray(waliKelasRes) ? waliKelasRes : [];
       setWaliKelasList(wkList);
+      setShiftList(shiftRes.data || []);
     } catch (error: any) {
       console.error(error);
       message.error('Gagal mengambil data kelas');
@@ -154,6 +164,14 @@ export default function KelasPage() {
       ...getColumnSearchProps('homeroomTeacher', 'Cari Wali Kelas'),
     },
     {
+      title: 'Shift',
+      dataIndex: 'shift',
+      key: 'shift',
+      width: 120,
+      align: 'center' as const,
+      render: (shift: any) => shift ? <span className="text-blue-600 border border-blue-200 bg-blue-50 px-2 py-1 rounded text-xs">{shift.name}</span> : <span className="text-gray-400 text-xs">Global</span>,
+    },
+    {
       title: 'Kapasitas',
       dataIndex: 'capacity',
       key: 'capacity',
@@ -253,14 +271,15 @@ export default function KelasPage() {
         />
       </div>
 
-      <KelasModal
-        isModalVisible={isModalVisible}
-        editingId={editingId}
-        form={form}
-        waliKelasList={waliKelasList}
-        onCancel={() => setIsModalVisible(false)}
-        onOk={handleModalOk}
-      />
+        <KelasModal 
+          isModalVisible={isModalVisible}
+          editingId={editingId}
+          form={form}
+          waliKelasList={waliKelasList}
+          shiftList={shiftList}
+          onCancel={() => setIsModalVisible(false)}
+          onOk={handleModalOk}
+        />
     </div>
   );
 }

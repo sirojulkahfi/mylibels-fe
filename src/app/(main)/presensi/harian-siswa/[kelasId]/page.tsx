@@ -43,12 +43,17 @@ export default function InputPresensiHarianPage({ params }: { params: Promise<{ 
         const existingPresensi = await presensiService.findAllSiswa({ kelasId, tanggal: todayIso });
         const statusToCode: Record<string, string> = { Hadir: 'H', Sakit: 'S', Izin: 'I', Alpha: 'A' };
         
-        const presensiData = siswaKelas.map((s: any) => ({
-          ...s,
-          presensiId: existingPresensi?.find((item: any) => item.siswaId === s.id)?.id,
-          status: statusToCode[existingPresensi?.find((item: any) => item.siswaId === s.id)?.status] || 'H',
-          keterangan: ''
-        }));
+        const presensiData = siswaKelas.map((s: any) => {
+          const presensi = existingPresensi?.find((item: any) => item.siswaId === s.id);
+          return {
+            ...s,
+            presensiId: presensi?.id,
+            status: statusToCode[presensi?.status] || 'H',
+            jamMasuk: presensi?.jamMasuk,
+            jamKeluar: presensi?.jamKeluar,
+            keterangan: presensi?.keterangan || ''
+          };
+        });
         
         setData(presensiData);
       } catch (error) {
@@ -112,6 +117,23 @@ export default function InputPresensiHarianPage({ params }: { params: Promise<{ 
       dataIndex: 'name',
       key: 'name',
       render: (text: string) => <span className="font-semibold text-gray-800">{text}</span>,
+    },
+    {
+      title: 'Waktu Absen',
+      key: 'waktu',
+      width: 150,
+      align: 'center' as const,
+      render: (text: any, record: any) => (
+        <div className="flex flex-col text-xs items-center justify-center">
+          <span className="text-emerald-600 font-medium">In: {record.jamMasuk || '-'}</span>
+          <span className="text-red-500 font-medium">Out: {record.jamKeluar || '-'}</span>
+          {record.jamKeluar && (
+            <span className="mt-1 bg-blue-100 text-blue-700 border border-blue-200 text-[10px] px-2 py-0.5 rounded-full font-bold">
+              KELUAR / PULANG
+            </span>
+          )}
+        </div>
+      ),
     },
     {
       title: 'Status Kehadiran',

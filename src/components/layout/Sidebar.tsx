@@ -87,17 +87,19 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
 
         // 2. Data Induk
         if (hasPermission('VIEW_DATA_INDUK') || user?.role?.name === 'ADMIN') {
-            items.push(getItem('Data Induk', 'data-induk', <DatabaseOutlined />, [
-                getItem(<Link href="/data-induk/siswa">Siswa</Link>, '/data-induk/siswa'),
-                getItem(<Link href="/data-induk/guru-staf">Guru & Staf</Link>, '/data-induk/guru-staf'),
-                getItem(<Link href="/data-induk/mata-pelajaran">Mata Pelajaran</Link>, '/data-induk/mata-pelajaran'),
-                getItem(<Link href="/data-induk/kelas">Kelas</Link>, '/data-induk/kelas'),
-                getItem(<Link href="/data-induk/wali-kelas">Wali Kelas</Link>, '/data-induk/wali-kelas'),
-                getItem(<Link href="/data-induk/ruangan">Ruangan</Link>, '/data-induk/ruangan'),
-                getItem(<Link href="/data-induk/ekstrakurikuler">Ekstrakurikuler</Link>, '/data-induk/ekstrakurikuler'),
-                getItem(<Link href="/data-induk/alumni">Alumni</Link>, '/data-induk/alumni'),
-                getItem(<Link href="/data-induk/cetak-kartu">Cetak Kartu ID</Link>, '/data-induk/cetak-kartu')
-            ]));
+            const dataIndukChildren: MenuItem[] = [];
+            dataIndukChildren.push(getItem(<Link href="/data-induk/siswa">Data Siswa</Link>, '/data-induk/siswa'));
+            dataIndukChildren.push(getItem(<Link href="/data-induk/guru-staf">Data Guru & Staf</Link>, '/data-induk/guru-staf'));
+            dataIndukChildren.push(getItem(<Link href="/data-induk/kelas">Data Kelas</Link>, '/data-induk/kelas'));
+            dataIndukChildren.push(getItem(<Link href="/data-induk/shift">Data Shift</Link>, '/data-induk/shift'));
+            dataIndukChildren.push(getItem(<Link href="/data-induk/mata-pelajaran">Mata Pelajaran</Link>, '/data-induk/mata-pelajaran'));
+            dataIndukChildren.push(getItem(<Link href="/data-induk/wali-kelas">Wali Kelas</Link>, '/data-induk/wali-kelas'));
+            dataIndukChildren.push(getItem(<Link href="/data-induk/ruangan">Ruangan</Link>, '/data-induk/ruangan'));
+            dataIndukChildren.push(getItem(<Link href="/data-induk/ekstrakurikuler">Ekstrakurikuler</Link>, '/data-induk/ekstrakurikuler'));
+            dataIndukChildren.push(getItem(<Link href="/data-induk/alumni">Alumni</Link>, '/data-induk/alumni'));
+            dataIndukChildren.push(getItem(<Link href="/data-induk/cetak-kartu">Cetak Kartu ID</Link>, '/data-induk/cetak-kartu'));
+
+            items.push(getItem('Data Induk', 'data-induk', <DatabaseOutlined />, dataIndukChildren));
         }
 
         // 3. Akademik
@@ -171,6 +173,7 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
             pengaturanChildren.push(getItem(<Link href="/pengaturan/permission">Permission</Link>, '/pengaturan/permission'));
             pengaturanChildren.push(getItem(<Link href="/pengaturan/audit-log">Audit Log</Link>, '/pengaturan/audit-log'));
             pengaturanChildren.push(getItem(<Link href="/pengaturan/settings">Settings</Link>, '/pengaturan/settings'));
+            pengaturanChildren.push(getItem(<Link href="/pengaturan/presensi">Jam Presensi</Link>, '/pengaturan/presensi'));
 
             if (pengaturanChildren.length > 0) {
                 items.push(getItem('Pengaturan', 'pengaturan', <SettingOutlined />, pengaturanChildren));

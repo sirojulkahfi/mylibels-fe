@@ -9,6 +9,7 @@ interface KelasModalProps {
   editingId: string | null;
   form: FormInstance;
   waliKelasList: WaliKelasItem[];
+  shiftList: any[];
   onCancel: () => void;
   onOk: () => void;
 }
@@ -18,6 +19,7 @@ export default function KelasModal({
   editingId,
   form,
   waliKelasList,
+  shiftList,
   onCancel,
   onOk,
 }: KelasModalProps) {
@@ -72,6 +74,18 @@ export default function KelasModal({
           >
             {waliKelasList.map(wk => (
               <Option key={wk.id} value={wk.teacherName}>{wk.teacherName}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="shiftId"
+          label="Pilih Shift (Opsional)"
+          tooltip="Jika kosong, maka siswa di kelas ini akan mengikuti jam absen global di menu Pengaturan"
+        >
+          <Select placeholder="Pilih shift" allowClear showSearch optionFilterProp="children">
+            {shiftList.map((shift) => (
+              <Option key={shift.id} value={shift.id}>{shift.name} ({shift.waktuMulaiMasuk} - {shift.waktuBatasPulang})</Option>
             ))}
           </Select>
         </Form.Item>
