@@ -1,15 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Typography, Input, Button, Card, Spin, Alert } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
+import { Typography, Input, Card, Spin } from 'antd';
 import { 
   QrcodeOutlined,
   CheckCircleFilled,
   WarningFilled
 } from '@ant-design/icons';
-import Link from 'next/link';
-import { siswaService } from '@/services/data-induk/siswa.service';
 import QRScanner from '@/components/ui/QRScanner';
+import api from '@/services/api';
 
 const { Title, Text } = Typography;
 
@@ -17,37 +16,45 @@ export default function ScanPresensiPage() {
   const [scannedCode, setScannedCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{success: boolean, name?: string, message: string} | null>(null);
-  const [siswaName, setSiswaName] = useState('Siswa Terdaftar');
+  
+  const inputRef = useRef<any>(null);
 
   useEffect(() => {
-    siswaService.findAll().then(res => {
-      if (res && res.length > 0) {
-        setSiswaName(`${res[0].name} (${res[0].kelas?.name || '-'})`);
+    // Keep focus on input for physical barcode scanners
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+    
+    // Refresh focus periodically to ensure physical scanner always works
+    const interval = setInterval(() => {
+      if (document.activeElement?.tagName !== 'INPUT' && inputRef.current) {
+        inputRef.current.focus();
       }
-    }).catch(console.error);
+    }, 2000);
+    
+    return () => clearInterval(interval);
   }, []);
 
-  const handleScan = (e: React.KeyboardEvent<HTMLInputElement> | { key: string }, textOverride?: string) => {
+  const handleScan = async (e: React.KeyboardEvent<HTMLInputElement> | { key: string }, textOverride?: string) => {
     const code = textOverride || scannedCode;
     if (e.key === 'Enter' && code) {
       setLoading(true);
-      // Simulate API call
-      setTimeout(() => {
+      try {
+        const response = await api.post('/presensi/scan', { code });
+        setResult({
+          success: true,
+          name: response.data.name,
+          message: response.data.message
+        });
+      } catch (error: any) {
+        setResult({
+          success: false,
+          message: error.response?.data?.message || 'Data tidak ditemukan atau kartu tidak valid'
+        });
+      } finally {
         setLoading(false);
-        if (code.includes('7')) { // Dummy logic: if code has 7, success
-          setResult({
-            success: true,
-            name: siswaName,
-            message: `Berhasil check-in pada ${new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB`
-          });
-        } else {
-          setResult({
-            success: false,
-            message: 'Siswa tidak ditemukan atau kartu tidak valid'
-          });
-        }
         setScannedCode(''); // Clear input for next scan
-      }, 600);
+      }
     }
   };
 
@@ -78,6 +85,7 @@ export default function ScanPresensiPage() {
           
           <div className="p-8 flex flex-col items-center">
             <Input 
+              ref={inputRef}
               autoFocus
               placeholder="Scan Barcode / QR Code Fisik..." 
               size="large"
