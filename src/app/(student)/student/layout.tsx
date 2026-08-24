@@ -117,7 +117,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
               </Dropdown>
               
               {/* Hamburger Button for Mobile */}
-              <div className="lg:hidden flex items-center">
+              <div className="lg:!hidden flex items-center">
                 <Button 
                   type="text" 
                   icon={mobileMenuOpen ? <CloseOutlined /> : <MenuOutlined />} 
