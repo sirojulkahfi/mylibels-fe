@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MyLibels Frontend (mylibels-fe)
 
-## Getting Started
+Aplikasi frontend ini dibangun dengan [Next.js](https://nextjs.org/) (App Router), React, dan Tailwind CSS. Aplikasi ini dirancang untuk berjalan pada port `8000`.
 
-First, run the development server:
+## 🚀 Cara Menjalankan (Development)
+
+1. Pastikan Anda berada di direktori `mylibels-fe`:
+   ```bash
+   cd mylibels-fe
+   ```
+2. Instal dependensi:
+   ```bash
+   npm install
+   ```
+3. Konfigurasi *Environment Variable*:
+   Buat file `.env` (atau `.env.local`) jika dibutuhkan untuk menampung konfigurasi API (misalnya `NEXT_PUBLIC_API_URL`).
+4. Jalankan development server:
+   ```bash
+   npm run dev
+   ```
+5. Buka [http://localhost:8000](http://localhost:8000) di browser Anda.
+
+## 📦 Build untuk Produksi
+
+Untuk melakukan build aplikasi ke mode produksi:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm run start
 ```
+*(Script `npm run start` juga sudah dikonfigurasi untuk berjalan di port 8000).*
 
-Open [http://localhost:8000](http://localhost:8000) with your browser to see the result.
+## 🛠 Teknologi Utama
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Framework**: Next.js 16 (React 19)
+- **Styling**: Tailwind CSS & Ant Design (`antd`)
+- **State Management**: Zustand & React Query (`@tanstack/react-query`)
+- **HTTP Client**: Axios
+- **Fitur Tambahan**: Excel export (`exceljs`), QR Code scanner (`html5-qrcode`), Cookie handling (`js-cookie`).
