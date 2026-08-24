@@ -81,7 +81,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-1 sm:space-x-4">
+            <nav className="hidden lg:flex space-x-1 sm:space-x-4">
               {menuItems.map((item) => {
                 const isActive = pathname.startsWith(item.path);
                 return (
@@ -104,7 +104,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
             {/* User Profile and Mobile Menu Button */}
             <div className="flex items-center gap-2">
               <Dropdown menu={userMenu} placement="bottomRight" trigger={['click']}>
-                <div className="hidden md:flex items-center gap-3 cursor-pointer hover:bg-slate-50 py-1 px-2 rounded-lg transition-colors">
+                <div className="hidden lg:flex items-center gap-3 cursor-pointer hover:bg-slate-50 py-1 px-2 rounded-lg transition-colors">
                   <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold border border-blue-200">
                     {user?.name?.charAt(0) || 'S'}
                   </div>
@@ -117,19 +117,21 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
               </Dropdown>
               
               {/* Hamburger Button for Mobile */}
-              <Button 
-                type="text" 
-                icon={mobileMenuOpen ? <CloseOutlined /> : <MenuOutlined />} 
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden flex items-center justify-center text-slate-600 hover:bg-slate-100 text-lg w-10 h-10"
-              />
+              <div className="lg:hidden flex items-center">
+                <Button 
+                  type="text" 
+                  icon={mobileMenuOpen ? <CloseOutlined /> : <MenuOutlined />} 
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="flex items-center justify-center text-slate-600 hover:bg-slate-100 text-lg w-10 h-10"
+                />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-200 bg-white">
+          <div className="lg:hidden border-t border-slate-200 bg-white">
             <div className="px-2 pt-2 pb-4 space-y-1 sm:px-3">
               {menuItems.map((item) => {
                 const isActive = pathname.startsWith(item.path);
