@@ -29,7 +29,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                     type="primary" 
                     danger 
                     icon={<LogoutOutlined />} 
-                    onClick={() => logout()}
+                    onClick={() => {
+                        logout();
+                        window.location.href = '/login';
+                    }}
                     size="large"
                     className="shadow-lg"
                 >
