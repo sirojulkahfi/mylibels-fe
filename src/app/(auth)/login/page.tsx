@@ -11,7 +11,7 @@ import { settingsService } from "@/services/system/settings.service";
 import { useAuthStore } from "@/store/useAuthStore";
 import { getDashboardRoute } from "@/utils/dashboard-route";
 
-export default function LoginPage() {
+function LoginContent() {
   const { login } = useAuthStore();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -122,7 +122,7 @@ export default function LoginPage() {
             {sessionExpired && (
               <div className="mb-6 p-3 rounded-xl bg-amber-500/20 border border-amber-500/50 text-amber-100 text-sm backdrop-blur-sm flex items-center justify-between">
                 <span>⚠️ Sesi berakhir. Silakan login kembali.</span>
-                <button onClick={() => setSessionExpired(false)} className="ml-2 text-amber-200 hover:text-white transition-colors">✕</button>
+                <button type="button" onClick={() => setSessionExpired(false)} className="ml-2 text-amber-200 hover:text-white transition-colors">✕</button>
               </div>
             )}
             {error && (
@@ -214,5 +214,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <React.Suspense fallback={<div className="min-h-screen bg-[#0f172a] flex items-center justify-center text-white">Loading...</div>}>
+      <LoginContent />
+    </React.Suspense>
   );
 }
