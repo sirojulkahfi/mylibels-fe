@@ -4,8 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Space, Tooltip, Popconfirm, message, Modal, Form, Input, InputNumber, Select } from 'antd';
 import { useRouter } from 'next/navigation';
 import { PlusOutlined, ReloadOutlined, ExportOutlined, EditOutlined, DeleteOutlined, UsergroupAddOutlined } from '@ant-design/icons';
-import axios from 'axios';
-import { useAuthStore } from '@/store/useAuthStore';
+import api from '@/services/api';
 import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
 import ButtonToolbar from '@/components/ui/ButtonToolbar';
 import { getColumnSearchProps } from '@/utils/tableUtils';
@@ -36,7 +35,6 @@ export default function KelasPage() {
   const [shiftList, setShiftList] = useState<any[]>([]);
   const [form] = Form.useForm();
   const router = useRouter();
-  const { token } = useAuthStore();
 
     const fetchData = async () => {
     try {
@@ -44,9 +42,7 @@ export default function KelasPage() {
       const [res, waliKelasRes, shiftRes] = await Promise.all([
         kelasService.findAll(),
         waliKelasService.findAll(),
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'}/system/shift`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }).catch(() => ({ data: [] }))
+        api.get(`/system/shift`).catch(() => ({ data: [] }))
       ]);
       setData(res);
       const wkList = Array.isArray(waliKelasRes?.data) ? waliKelasRes.data : Array.isArray(waliKelasRes) ? waliKelasRes : [];
