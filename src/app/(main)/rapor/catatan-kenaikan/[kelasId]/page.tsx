@@ -48,7 +48,7 @@ export default function RaporCatatanKenaikanPage() {
       }
     };
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchData();
   }, [kelasId]);
 

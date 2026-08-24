@@ -52,7 +52,7 @@ import { kelasService } from '@/services/data-induk/kelas.service';
         }
     };
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchStatus();
   }, [kelasId]);
 

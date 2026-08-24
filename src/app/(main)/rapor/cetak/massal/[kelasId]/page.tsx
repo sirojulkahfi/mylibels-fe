@@ -41,7 +41,7 @@ export default function CetakRaporMassalPage() {
       }
     };
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchData();
   }, [kelasId]);
 
