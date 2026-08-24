@@ -209,7 +209,7 @@ function LoginContent() {
               <p className="text-[10px] text-gray-400">
                 Versi {appVersion}
               </p>
-              <p className="text-[10px] text-white mt-1 italic">
+              <p className="text-[10px] text-white italic">
                 Aplikasi ini dikembangkan oleh Sirojul Kahpi (RJL DevOps)
               </p>
             </div>

@@ -184,10 +184,10 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
             <p className="text-sm font-medium text-slate-600">
               &copy; {new Date().getFullYear()} SMPN 15 Bandung. All rights reserved.
             </p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-400">
               Sistem Informasi Management Sekolah - Student Portal
             </p>
-            <p className="text-xs text-slate-400 mt-1 font-medium italic">
+            <p className="text-xs text-slate-400 font-medium italic">
               Aplikasi ini dikembangkan oleh Sirojul Kahpi (RJL DevOps)
             </p>
           </div>

@@ -19,10 +19,10 @@ export default function Footer() {
                 margin: 0,
             }}
         >
-            <div className="text-white text-[11px] font-small drop-shadow-sm flex flex-col items-center leading-tight justify-center py-2">
+            <div className="text-white text-[11px] font-small drop-shadow-sm flex flex-col items-center leading-none justify-center py-1.5 gap-0.5">
                 <span>Copyright © {new Date().getFullYear()} SMPN 15 Bandung</span>
-                <span className="text-[10px] text-white/80 mt-0.5">Sistem Informasi Management</span>
-                <span className="text-[9px] text-white mt-1 italic">Aplikasi ini dikembangkan oleh Sirojul Kahpi (RJL DevOps)</span>
+                <span className="text-[10px] text-white/80">Sistem Informasi Management</span>
+                <span className="text-[9px] text-white italic">Aplikasi ini dikembangkan oleh Sirojul Kahpi (RJL DevOps)</span>
             </div>
         </AntFooter>
     );
