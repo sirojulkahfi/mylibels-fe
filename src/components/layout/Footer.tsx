@@ -10,8 +10,9 @@ export default function Footer() {
         <AntFooter
             className="batik-bg shadow-sm"
             style={{
-                height: '35px',
-                padding: '0 24px',
+                height: 'auto',
+                minHeight: '45px',
+                padding: '8px 24px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -20,7 +21,8 @@ export default function Footer() {
         >
             <div className="text-white text-[11px] font-small drop-shadow-sm flex flex-col items-center leading-tight justify-center">
                 <span>Copyright © {new Date().getFullYear()} SMPN 15 Bandung</span>
-                <span className="text-[10px] text-white/80">Sistem Informasi Management</span>
+                <span className="text-[10px] text-white/80 mt-0.5">Sistem Informasi Management</span>
+                <span className="text-[9px] text-white/60 mt-1 italic">Aplikasi ini dikembangkan oleh Sirojul Kahfi (RJL DevOps)</span>
             </div>
         </AntFooter>
     );
