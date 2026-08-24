@@ -16,53 +16,71 @@ const QRScanner: React.FC<QRScannerProps> = ({ onScanSuccess, onScanFailure }) =
   const scannerRef = useRef<Html5Qrcode | null>(null);
 
   useEffect(() => {
+    let html5QrCode: Html5Qrcode | null = null;
+
+    if (isScanning) {
+      // Delay initialization slightly to ensure the DOM has rendered the #reader div
+      setTimeout(() => {
+        try {
+          setError(null);
+          html5QrCode = new Html5Qrcode("reader");
+          scannerRef.current = html5QrCode;
+
+          html5QrCode.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: { width: 250, height: 250 } },
+            (decodedText) => {
+              if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                  setIsScanning(false);
+                  onScanSuccess(decodedText);
+                }).catch(console.error);
+              }
+            },
+            (errorMessage) => {
+              if (onScanFailure) onScanFailure(errorMessage);
+            }
+          ).catch((err) => {
+            // If environment camera fails (e.g. on laptop), try any camera
+            html5QrCode?.start(
+              { facingMode: "user" },
+              { fps: 10, qrbox: { width: 250, height: 250 } },
+              (decodedText) => {
+                if (html5QrCode) {
+                  html5QrCode.stop().then(() => {
+                    setIsScanning(false);
+                    onScanSuccess(decodedText);
+                  }).catch(console.error);
+                }
+              },
+              (errorMessage) => {
+                if (onScanFailure) onScanFailure(errorMessage);
+              }
+            ).catch((err2) => {
+              setError(err2?.message || "Gagal mengakses kamera. Pastikan izin kamera telah diberikan.");
+              setIsScanning(false);
+            });
+          });
+        } catch (err: any) {
+          setError(err?.message || "Gagal mengakses kamera.");
+          setIsScanning(false);
+        }
+      }, 100);
+    }
+
     return () => {
-      if (scannerRef.current && isScanning) {
-        scannerRef.current.stop().catch(console.error);
+      if (html5QrCode && html5QrCode.isScanning) {
+        html5QrCode.stop().catch(console.error);
       }
     };
-  }, [isScanning]);
+  }, [isScanning, onScanSuccess, onScanFailure]);
 
-  const startScanner = async () => {
-    try {
-      setError(null);
-      const html5QrCode = new Html5Qrcode("reader");
-      scannerRef.current = html5QrCode;
-
-      await html5QrCode.start(
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
-        },
-        (decodedText) => {
-          // Prevent multiple scans
-          html5QrCode.stop().then(() => {
-            setIsScanning(false);
-            onScanSuccess(decodedText);
-          }).catch(console.error);
-        },
-        (errorMessage) => {
-          if (onScanFailure) {
-            onScanFailure(errorMessage);
-          }
-        }
-      );
-      setIsScanning(true);
-    } catch (err: any) {
-      setError(err?.message || "Gagal mengakses kamera. Pastikan izin kamera telah diberikan.");
-    }
+  const startScanner = () => {
+    setIsScanning(true);
   };
 
-  const stopScanner = async () => {
-    if (scannerRef.current) {
-      try {
-        await scannerRef.current.stop();
-        setIsScanning(false);
-      } catch (err) {
-        console.error("Failed to stop scanner", err);
-      }
-    }
+  const stopScanner = () => {
+    setIsScanning(false);
   };
 
   return (
