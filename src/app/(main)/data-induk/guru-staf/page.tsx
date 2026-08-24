@@ -68,12 +68,19 @@ export default function GuruStafPage() {
   const handleAdd = () => {
     setEditingId(null);
     form.resetFields();
+    form.setFieldsValue({ subject: [] });
     setIsModalVisible(true);
   };
 
   const handleEdit = (record: GuruStafData) => {
     setEditingId(record.id);
-    form.setFieldsValue(record);
+    const subjectArray = record.subject && record.subject !== '-' 
+      ? record.subject.split(',').map(s => s.trim()) 
+      : [];
+    form.setFieldsValue({
+      ...record,
+      subject: subjectArray
+    });
     setIsModalVisible(true);
   };
 
@@ -92,11 +99,16 @@ export default function GuruStafPage() {
     try {
       const values = await form.validateFields();
       
+      const payload = {
+        ...values,
+        subject: Array.isArray(values.subject) ? (values.subject.length > 0 ? values.subject.join(', ') : '-') : (values.subject || '-')
+      };
+      
       if (editingId) {
-        await guruStafService.update(editingId, values);
+        await guruStafService.update(editingId, payload);
         message.success('Data berhasil diperbarui');
       } else {
-        await guruStafService.create(values);
+        await guruStafService.create(payload);
         message.success('Data berhasil ditambahkan');
       }
       
@@ -122,7 +134,7 @@ export default function GuruStafPage() {
       title: 'NIP/NIK',
       dataIndex: 'nip',
       key: 'nip',
-      width: 170,
+      width: 140,
       sorter: (a: GuruStafData, b: GuruStafData) => a.nip.localeCompare(b.nip),
       ...getColumnSearchProps('nip', 'Cari NIP'),
     },
@@ -192,13 +204,10 @@ export default function GuruStafPage() {
     {
       title: 'Aksi',
       key: 'action',
-      width: 150,
+      width: 100,
       align: 'center' as const,
       render: (_: any, record: GuruStafData) => (
         <Space size="middle">
-          <Tooltip title="Detail">
-            <ButtonToolbar message="" icon={<EyeOutlined style={{ color: '#1677ff' }} />} className="bg-blue-50 text-blue-600 hover:bg-blue-100" />
-          </Tooltip>
           <Tooltip title="Edit">
             <ButtonToolbar 
               message="" 

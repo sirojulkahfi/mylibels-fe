@@ -30,7 +30,7 @@ export default function AuditLogDetailModal({
           </Descriptions.Item>
           
           <Descriptions.Item label="User" span={1}>
-            {detailData.user ? `${detailData.user.username} (${detailData.user.role?.name})` : 'System'}
+            {detailData.user ? `${detailData.user.name || detailData.user.username} (${detailData.user.role?.name || ''})` : (detailData.userId || 'System')}
           </Descriptions.Item>
           <Descriptions.Item label="Timestamp" span={1}>
             {new Date(detailData.createdAt).toLocaleString('id-ID')}

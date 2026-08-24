@@ -10,7 +10,6 @@ import { waliKelasService, WaliKelasItem } from '@/services/data-induk/wali-kela
 import { guruStafService } from '@/services/data-induk/guru-staf.service';
 import { kelasService } from '@/services/data-induk/kelas.service';
 import WaliKelasModal from './_components/WaliKelasModal';
-import WaliKelasDetailModal from './_components/WaliKelasDetailModal';
 
 const { Option } = Select;
 
@@ -22,7 +21,6 @@ export default function WaliKelasPage() {
 
   // Modal States
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
   const [selectedRecord, setSelectedRecord] = useState<WaliKelasItem | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -92,11 +90,6 @@ export default function WaliKelasPage() {
     setIsModalVisible(true);
   };
 
-  const handleOpenDetail = (record: WaliKelasItem) => {
-    setSelectedRecord(record);
-    setIsDetailVisible(true);
-  };
-
   const handleFormSubmit = async () => {
     try {
       const values = await form.validateFields();
@@ -143,7 +136,7 @@ export default function WaliKelasPage() {
       title: 'NIP / NIK',
       dataIndex: 'nip',
       key: 'nip',
-      width: 180,
+      width: 140,
       sorter: (a: WaliKelasItem, b: WaliKelasItem) => (a.nip || '').localeCompare(b.nip || ''),
       ...getColumnSearchProps('nip', 'Cari NIP'),
     },
@@ -228,18 +221,10 @@ export default function WaliKelasPage() {
     {
       title: 'Aksi',
       key: 'action',
-      width: 130,
+      width: 100,
       align: 'center' as const,
       render: (_: any, record: WaliKelasItem) => (
         <Space size="small">
-          <Tooltip title="Detail Wali Kelas">
-            <ButtonToolbar 
-              message="" 
-              icon={<EyeOutlined style={{ color: '#1677ff' }} />} 
-              className="bg-blue-50 text-blue-600 hover:bg-blue-100" 
-              onClick={() => handleOpenDetail(record)}
-            />
-          </Tooltip>
           <Tooltip title="Edit">
             <ButtonToolbar 
               message="" 
@@ -317,13 +302,6 @@ export default function WaliKelasPage() {
         kelasList={kelasList}
         onCancel={() => setIsModalVisible(false)}
         onOk={handleFormSubmit}
-      />
-
-      {/* Modal Detail Wali Kelas */}
-      <WaliKelasDetailModal
-        isDetailVisible={isDetailVisible}
-        selectedRecord={selectedRecord}
-        onCancel={() => setIsDetailVisible(false)}
       />
     </div>
   );

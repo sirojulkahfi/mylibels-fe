@@ -65,7 +65,7 @@ export default function AuditLogTable({ data, loading, selectedRowKeys, setSelec
     {
       title: 'User',
       key: 'user',
-      render: (_: any, record: any) => record.user ? `${record.user.username} (${record.user.role?.name})` : 'System'
+      render: (_: any, record: any) => record.user ? `${record.user.name || record.user.username} (${record.user.role?.name || ''})` : (record.userId || 'System')
     },
     {
       title: 'Timestamp',

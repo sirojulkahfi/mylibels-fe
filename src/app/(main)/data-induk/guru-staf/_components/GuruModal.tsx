@@ -93,12 +93,12 @@ export default function GuruModal({
           label="Mata Pelajaran yang Diampu"
         >
           <Select 
+            mode="multiple"
             showSearch
             placeholder="Pilih Mata Pelajaran (Kosongkan jika bukan guru)"
             allowClear
             optionFilterProp="children"
           >
-            <Option value="-">- (Bukan Guru Mata Pelajaran)</Option>
             {mapelData.map((mapel: any) => (
               <Option key={mapel.id} value={mapel.name}>
                 {mapel.name}

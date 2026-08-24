@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, use } from 'react';
-import { Table, Tag, Space, App, DatePicker } from 'antd';
+import { Table, Tag, Space, App, DatePicker, Button } from 'antd';
 import { ReloadOutlined, PrinterOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
@@ -32,10 +32,9 @@ export default function LaporanRekapKelasPage({ params }: { params: Promise<{ ke
         filters.endDate = dateRange[1].format('YYYY-MM-DD');
       }
       
-      // Ambil detail kelas
-      const kelasList = await kelasService.findAll();
-      const currentKelas = kelasList.find((k: any) => k.id === kelasId);
-      if (currentKelas) setKelasData(currentKelas);
+      // Ambil detail kelas berdasarkan ID route agar label tidak jatuh ke ID database.
+      const currentKelas = await kelasService.findOne(kelasId);
+      setKelasData(currentKelas?.data || currentKelas);
       
       const res = await presensiService.findAllSiswa(filters);
       setData(res || []);
@@ -126,15 +125,20 @@ export default function LaporanRekapKelasPage({ params }: { params: Promise<{ ke
 
   return (
     <div className="flex flex-col flex-1 min-h-0 bg-slate-50 p-4 pt-2 relative">
-      <div className="mb-2 text-gray-500 text-sm">Laporan / Absensi / Rekap Kelas / {kelasData?.name || kelasId}</div>
+      <div className="mb-2 text-gray-500 text-sm">
+        Laporan / Absensi / Rekap Kelas / {kelasData?.name || (loading ? 'Memuat kelas...' : 'Kelas tidak ditemukan')}
+      </div>
 
       <ToolbarWrapper>
         <Space>
-          <ButtonToolbar 
-            message="Kembali" 
+          <Button 
             icon={<ArrowLeftOutlined />} 
             onClick={() => router.back()}
-          />
+            className="border-0 flex items-center shadow-none hover:opacity-80 px-3"
+            style={{ color: '#ffffff', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
+          >
+            Kembali
+          </Button>
           <RangePicker 
             onChange={(dates) => setDateRange(dates)} 
             format="DD/MM/YYYY"

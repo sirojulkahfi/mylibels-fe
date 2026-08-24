@@ -11,6 +11,9 @@ import Link from 'next/link';
 import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
 import { akademikService } from '@/services/akademik/akademik.service';
 import { kelasService } from '@/services/data-induk/kelas.service';
+import { mataPelajaranService } from '@/services/data-induk/mata-pelajaran.service';
+import { guruStafService } from '@/services/data-induk/guru-staf.service';
+import EditJadwalModal from './_components/EditJadwalModal';
 
 export default function JadwalRombelPage() {
   const router = useRouter();
@@ -22,14 +25,26 @@ export default function JadwalRombelPage() {
   const [loading, setLoading] = useState(true);
   const [selectedKelas, setSelectedKelas] = useState(kelasId);
   const [kelasList, setKelasList] = useState<any[]>([]);
+  const [mapelList, setMapelList] = useState<any[]>([]);
+  const [guruList, setGuruList] = useState<any[]>([]);
+  
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedJadwal, setSelectedJadwal] = useState<any | null>(null);
 
   // Fetch Kelas List for Dropdown
   const fetchKelas = async () => {
     try {
-      const res = await kelasService.findAll();
-      setKelasList(res || []);
+      const [resKelas, resMapel, resGuru] = await Promise.all([
+        kelasService.findAll(),
+        mataPelajaranService.findAll(),
+        guruStafService.findAll()
+      ]);
+      setKelasList(resKelas || []);
+      setMapelList(resMapel || []);
+      setGuruList(resGuru || []);
     } catch (error) {
-      console.error("Gagal memuat kelas", error);
+      console.error("Gagal memuat referensi data", error);
     }
   };
 
@@ -44,23 +59,50 @@ export default function JadwalRombelPage() {
     try {
       setLoading(true);
       const res = await akademikService.getJadwalByKelas(selectedKelas);
-      // NOTE: In a real scenario, you'd map the 1D list from backend into the 2D matrix (times x days).
-      // If no data, use a fallback structure for now
-      if (res && res.length > 0) {
-        // Just mock mapping for UI showcase
-        const mapped = res.map((r: any, i: number) => ({
-          key: r.id || i,
-          time: `${r.jamMulai} - ${r.jamSelesai}`,
-          mon: r.hari === 'Senin' ? `${r.mataPelajaran?.name || '-'} (${r.guru?.name || '-'})` : '-',
-          tue: r.hari === 'Selasa' ? `${r.mataPelajaran?.name || '-'} (${r.guru?.name || '-'})` : '-',
-          wed: r.hari === 'Rabu' ? `${r.mataPelajaran?.name || '-'} (${r.guru?.name || '-'})` : '-',
-          thu: r.hari === 'Kamis' ? `${r.mataPelajaran?.name || '-'} (${r.guru?.name || '-'})` : '-',
-          fri: r.hari === 'Jumat' ? `${r.mataPelajaran?.name || '-'} (${r.guru?.name || '-'})` : '-',
-        }));
-        setData(mapped);
-      } else {
-        setData([]); // fallback to empty
-      }
+      
+      // Standar jam pelajaran
+      const jamList = [
+        { mulai: '07:00', selesai: '07:45' },
+        { mulai: '07:45', selesai: '08:30' },
+        { mulai: '08:30', selesai: '09:15' },
+        { mulai: '09:15', selesai: '09:45', isBreak: true, label: 'Istirahat' },
+        { mulai: '09:45', selesai: '10:30' },
+        { mulai: '10:30', selesai: '11:15' },
+        { mulai: '11:15', selesai: '12:00' },
+        { mulai: '12:00', selesai: '12:30', isBreak: true, label: 'Istirahat' },
+        { mulai: '12:30', selesai: '13:15' },
+        { mulai: '13:15', selesai: '14:00' }
+      ];
+
+      const mapped = jamList.map((jam, idx) => {
+        const timeStr = `${jam.mulai} - ${jam.selesai}`;
+        
+        if (jam.isBreak) {
+          return {
+            key: `break-${idx}`,
+            time: timeStr,
+            mon: { text: jam.label, type: 'break' },
+            tue: { text: jam.label, type: 'break' },
+            wed: { text: jam.label, type: 'break' },
+            thu: { text: jam.label, type: 'break' },
+            fri: { text: jam.label, type: 'break' },
+          };
+        }
+
+        const findJadwal = (hari: string) => res?.find((r: any) => r.hari === hari && r.jamMulai === jam.mulai);
+
+        return {
+          key: idx,
+          time: timeStr,
+          mon: { ...findJadwal('Senin'), hari: 'Senin', jamMulai: jam.mulai, jamSelesai: jam.selesai },
+          tue: { ...findJadwal('Selasa'), hari: 'Selasa', jamMulai: jam.mulai, jamSelesai: jam.selesai },
+          wed: { ...findJadwal('Rabu'), hari: 'Rabu', jamMulai: jam.mulai, jamSelesai: jam.selesai },
+          thu: { ...findJadwal('Kamis'), hari: 'Kamis', jamMulai: jam.mulai, jamSelesai: jam.selesai },
+          fri: { ...findJadwal('Jumat'), hari: 'Jumat', jamMulai: jam.mulai, jamSelesai: jam.selesai },
+        };
+      });
+
+      setData(mapped);
     } catch (error) {
       // Don't show error if it's just not found or if the id is invalid ('vii-a')
       console.error(error);
@@ -74,34 +116,57 @@ export default function JadwalRombelPage() {
     fetchJadwal();
   }, [selectedKelas]);
 
-  const renderCell = (text: string) => {
-    if (!text || text === '-' || text === 'Istirahat' || text === 'Upacara' || text === 'Senam') {
-      return <span className="text-gray-400 italic">{text || '-'}</span>;
+  const openModal = (cellData: any) => {
+    if (cellData.type === 'break') return;
+    setSelectedJadwal(cellData);
+    setIsModalOpen(true);
+  };
+
+  const renderCell = (cellData: any) => {
+    if (!cellData || cellData.type === 'break') {
+      return <span className="text-gray-400 italic">{cellData?.text || '-'}</span>;
     }
     
-    // Determine color based on subject
+    const text = cellData.mapelName;
+    const guru = cellData.guruName;
+
+    if (!text && !guru) {
+      return (
+        <div 
+          onClick={() => openModal(cellData)}
+          className="flex flex-col items-center justify-center p-2 h-16 bg-slate-50 border border-slate-200 border-dashed rounded-lg cursor-pointer hover:bg-slate-100 hover:border-blue-300 transition-all group"
+        >
+          <span className="text-gray-400 group-hover:text-blue-500">+ Tambah</span>
+        </div>
+      );
+    }
+    
+    // Determine color based on subject roughly
     let bgColor = 'bg-blue-50';
     let borderColor = 'border-blue-200';
     let textColor = 'text-blue-700';
     
-    if (text === 'IPA' || text === 'Matematika') {
+    if (text?.includes('IPA') || text?.includes('Matematika')) {
       bgColor = 'bg-emerald-50';
       borderColor = 'border-emerald-200';
       textColor = 'text-emerald-700';
-    } else if (text === 'Bahasa Indonesia' || text === 'Bahasa Inggris') {
+    } else if (text?.includes('Bahasa')) {
       bgColor = 'bg-orange-50';
       borderColor = 'border-orange-200';
       textColor = 'text-orange-700';
-    } else if (text === 'IPS' || text === 'PKN') {
+    } else if (text?.includes('IPS') || text?.includes('PKN')) {
       bgColor = 'bg-purple-50';
       borderColor = 'border-purple-200';
       textColor = 'text-purple-700';
     }
 
     return (
-      <div className={`flex flex-col items-center justify-center p-2 ${bgColor} border ${borderColor} rounded-lg cursor-pointer hover:opacity-80 transition-opacity`}>
-        <span className={`font-bold ${textColor}`}>{text}</span>
-        <span className="text-xs text-gray-500 mt-1">Guru Mapel</span>
+      <div 
+        onClick={() => openModal(cellData)}
+        className={`flex flex-col items-center justify-center p-2 min-h-16 ${bgColor} border ${borderColor} rounded-lg cursor-pointer hover:opacity-80 hover:shadow-sm transition-all`}
+      >
+        <span className={`font-bold ${textColor} text-center`}>{text || '-'}</span>
+        <span className="text-xs text-gray-500 mt-1 text-center truncate w-full" title={guru || '-'}>{guru || '-'}</span>
       </div>
     );
   };
@@ -125,15 +190,7 @@ export default function JadwalRombelPage() {
       </div>
 
       <ToolbarWrapper>
-        <Button 
-          icon={<ArrowLeftOutlined />} 
-          onClick={() => router.push('/akademik/jadwal-pelajaran')}
-          className="border-0 flex items-center shadow-none hover:opacity-80 px-3 ml-2 mr-4"
-          style={{ color: '#ffffff', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
-        >
-          Kembali
-        </Button>
-        <div className="flex flex-col mr-4 hidden md:flex">
+        <div className="flex flex-col ml-4 mr-4 hidden md:flex">
           <span className="text-white font-bold leading-tight">
             Jadwal Kelas {kelasList.length > 0 ? (kelasList.find(k => k.id === selectedKelas)?.name || 'Tidak Ditemukan') : 'Memuat...'}
           </span>
@@ -163,17 +220,30 @@ export default function JadwalRombelPage() {
         </div>
       </ToolbarWrapper>
 
-      <div className="data-induk-table-wrapper bg-white px-4 pb-4 pt-1 mt-1 rounded-lg shadow-sm border border-gray-100 flex-1 flex flex-col min-h-0">
+      <div className="data-induk-table-wrapper bg-white px-4 pb-4 pt-1 mt-1 rounded-lg shadow-sm border border-gray-100 flex-1 flex flex-col min-h-0 overflow-hidden">
         <Table 
           columns={columns} 
           dataSource={data} 
-          rowKey="id"
+          rowKey="key"
           pagination={false}
           size="middle" bordered
           loading={loading}
-          scroll={{ x: 800, y: 'calc(100vh - 270px)' }}
+          scroll={{ x: 'max-content', y: 'calc(100vh - 270px)' }}
         />
       </div>
+
+      <EditJadwalModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={() => {
+          setIsModalOpen(false);
+          fetchJadwal();
+        }}
+        jadwalData={selectedJadwal}
+        mapelList={mapelList}
+        guruList={guruList}
+        kelasId={selectedKelas}
+      />
     </div>
   );
 }

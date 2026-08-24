@@ -82,15 +82,7 @@ export default function JadwalGuruPage() {
       </div>
 
       <ToolbarWrapper>
-        <Button 
-          icon={<ArrowLeftOutlined />} 
-          onClick={() => router.push('/akademik/jadwal-pelajaran')}
-          className="border-0 flex items-center shadow-none hover:opacity-80 px-3 ml-2 mr-4"
-          style={{ color: '#ffffff', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
-        >
-          Kembali
-        </Button>
-        <div className="flex flex-col mr-4 hidden md:flex">
+        <div className="flex flex-col ml-4 mr-4 hidden md:flex">
           <span className="text-white font-bold leading-tight">Jadwal Mengajar Guru</span>
         </div>
         

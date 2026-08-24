@@ -29,8 +29,9 @@ export default function ModalUpdate({ visible, onClose, onSuccess, data }: Props
 
             // Menggunakan method update
             await settingsService.update(data.id, {
+                key: data.key,
                 value: values.value,
-                description: values.description
+                description: values.group
             });
 
             message.success('Setting updated successfully');
@@ -61,7 +62,7 @@ export default function ModalUpdate({ visible, onClose, onSuccess, data }: Props
                 <Form.Item name="value" label="Value" rules={[{ required: true, message: 'Please enter setting value' }]}>
                     <Input placeholder="Enter value" />
                 </Form.Item>
-                <Form.Item name="description" label="Description">
+                <Form.Item name="group" label="Description">
                     <Input.TextArea placeholder="Enter description" rows={2} />
                 </Form.Item>
             </Form>

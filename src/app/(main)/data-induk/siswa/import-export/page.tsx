@@ -134,7 +134,7 @@ export default function ImportExportSiswaPage() {
             { title: 'Unggah File', description: 'Pilih file .xlsx / .csv' },
             { title: 'Pratinjau Data', description: 'Cek kesesuaian kolom' },
             { title: 'Selesai', description: 'Data tersimpan' },
-          ]}
+          ].map(item => ({ title: item.title, subTitle: item.description, content: item.description }))}
         />
       </div>
 

@@ -10,11 +10,11 @@ export const settingsService = {
     const response = await api.post('/settings', data);
     return response.data;
   },
-  update: async (id: number, data: any) => {
+  update: async (id: string, data: any) => {
     const response = await api.put(`/settings/${id}`, data);
     return response.data;
   },
-  remove: async (id: number) => {
+  remove: async (id: string) => {
     const response = await api.delete(`/settings/${id}`);
     return response.data;
   },

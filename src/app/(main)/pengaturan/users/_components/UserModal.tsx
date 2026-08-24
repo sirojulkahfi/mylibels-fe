@@ -7,7 +7,7 @@ interface Props {
   setIsModalOpen: (val: boolean) => void;
   form: FormInstance;
   handleSubmit: (values: any) => void;
-  editingId: number | null;
+  editingId: string | null;
   karyawans: any[];
   roles: any[];
 }
@@ -25,22 +25,22 @@ export default function UserModal({
       <Form form={form} layout="vertical" onFinish={handleSubmit}>
         <Form.Item 
           label="Nama Lengkap" 
-          name="namaLengkap" 
+          name="name" 
           rules={[{ required: true, message: 'Harap isi nama lengkap' }]}
         >
           <AutoComplete
-            options={karyawans.map((k: any) => ({ value: k.namaLengkap, label: `${k.nik} - ${k.namaLengkap} (${k.jabatan || 'Staff'})` }))}
+            options={karyawans.map((k: any) => ({ value: k.name, label: `${k.nip || ''} - ${k.name} (${k.position || 'Staff'})` }))}
             filterOption={(inputValue, option) =>
               option!.label.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
             }
             onChange={(val) => {
-              form.setFieldsValue({ namaLengkap: val.toUpperCase() });
+              form.setFieldsValue({ name: val.toUpperCase() });
               if (!editingId) {
                 const generated = val.toLowerCase().replace(/[^a-z0-9]/g, '.').replace(/\.+/g, '.').replace(/^\.+|\.+$/g, '');
                 form.setFieldsValue({ username: generated });
               }
             }}
-            placeholder="Ketik atau pilih nama karyawan..."
+            placeholder="Ketik atau pilih nama..."
           />
         </Form.Item>
 

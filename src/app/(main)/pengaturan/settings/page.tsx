@@ -99,9 +99,9 @@ export default function SystemSettingsPage() {
         },
         {
             title: 'Description',
-            dataIndex: 'description',
-            key: 'description',
-            ...getColumnSearchProps('description')
+            dataIndex: 'group',
+            key: 'group',
+            ...getColumnSearchProps('group')
         },
         {
             title: 'Last Updated',
@@ -134,7 +134,7 @@ export default function SystemSettingsPage() {
                 centered: true,
                 onOk: async () => {
                     try {
-                        await settingsService.remove(Number(selectedRowKeys[0]));
+                        await settingsService.remove(String(selectedRowKeys[0]));
                         message.success('Setting successfully deleted');
                         setTimeout(() => fetchData(), 0);
                     } catch (error: any) {

@@ -15,6 +15,7 @@ import {
     SettingOutlined,
     ImportOutlined,
     CheckSquareOutlined,
+    NotificationOutlined,
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -44,18 +45,33 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
     const hasPermission = (requiredPermission: string) => {
         if (!user) return false;
         // Superadmin bypasses all permission checks
-        if (user?.role?.name === 'SUPER_ADMIN') return true;
-        
+        const normalizedRole = roleName.trim().toUpperCase().replace(/[- ]/g, '_');
+        if (normalizedRole === 'SUPER_ADMIN' || normalizedRole === 'ADMIN') return true;
+
         // Check if role has the specific permission in its array
-        return user?.role?.permissions?.includes(requiredPermission) || false;
+        if (user?.role?.permissions?.includes(requiredPermission)) return true;
+
+        const rolePermissions: Record<string, string[]> = {
+            KEPALA_SEKOLAH: ['VIEW_AKADEMIK', 'VIEW_PRESENSI', 'VIEW_PENILAIAN', 'VIEW_BK', 'VIEW_RAPOR', 'VIEW_LAPORAN'],
+            GURU: ['VIEW_AKADEMIK', 'VIEW_PRESENSI', 'VIEW_PENILAIAN', 'VIEW_BK', 'VIEW_RAPOR'],
+            WALI_KELAS: ['VIEW_AKADEMIK', 'VIEW_PRESENSI', 'VIEW_PENILAIAN', 'VIEW_BK', 'VIEW_RAPOR', 'VIEW_LAPORAN'],
+            SISWA: ['VIEW_PRESENSI', 'VIEW_PENILAIAN', 'VIEW_RAPOR', 'VIEW_BK'],
+        };
+        return rolePermissions[normalizedRole]?.includes(requiredPermission) || false;
     };
 
     const getOpenKeys = () => {
-        if (pathname.includes('/data-induk')) return ['data-induk'];
-        if (pathname.includes('/akademik')) return ['akademik'];
-        if (pathname.includes('/rapor')) return ['rapor'];
-        if (pathname.includes('/pengaturan')) return ['pengaturan'];
-        return [];
+        const keys = [];
+        if (pathname.includes('/data-induk')) keys.push('data-induk');
+        if (pathname.includes('/akademik')) keys.push('akademik');
+        if (pathname.includes('/akademik/jadwal-pelajaran')) keys.push('jadwal-pelajaran');
+        if (pathname.includes('/penilaian')) keys.push('penilaian');
+        if (pathname.includes('/presensi')) keys.push('presensi');
+        if (pathname.includes('/bimbingan-konseling')) keys.push('bimbingan-konseling');
+        if (pathname.includes('/rapor')) keys.push('rapor');
+        if (pathname.includes('/laporan')) keys.push('laporan');
+        if (pathname.includes('/pengaturan')) keys.push('pengaturan');
+        return keys;
     };
 
     const getDynamicItems = (): MenuItem[] => {
@@ -63,6 +79,11 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
 
         // 1. Dashboard
         items.push(getItem(<Link href="/dashboard">Dashboard</Link>, '/dashboard', <DashboardOutlined />));
+
+        // 1.5 Pengumuman
+        if (hasPermission('VIEW_DATA_INDUK') || user?.role?.name === 'ADMIN') {
+            items.push(getItem(<Link href="/pengumuman">Pengumuman</Link>, '/pengumuman', <NotificationOutlined />));
+        }
 
         // 2. Data Induk
         if (hasPermission('VIEW_DATA_INDUK') || user?.role?.name === 'ADMIN') {
@@ -74,14 +95,18 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
                 getItem(<Link href="/data-induk/wali-kelas">Wali Kelas</Link>, '/data-induk/wali-kelas'),
                 getItem(<Link href="/data-induk/ruangan">Ruangan</Link>, '/data-induk/ruangan'),
                 getItem(<Link href="/data-induk/ekstrakurikuler">Ekstrakurikuler</Link>, '/data-induk/ekstrakurikuler'),
-                getItem(<Link href="/data-induk/alumni">Alumni</Link>, '/data-induk/alumni')
+                getItem(<Link href="/data-induk/alumni">Alumni</Link>, '/data-induk/alumni'),
+                getItem(<Link href="/data-induk/cetak-kartu">Cetak Kartu ID</Link>, '/data-induk/cetak-kartu')
             ]));
         }
 
         // 3. Akademik
         if (hasPermission('VIEW_AKADEMIK') || user?.role?.name === 'ADMIN') {
             items.push(getItem('Akademik', 'akademik', <DatabaseOutlined />, [
-                getItem(<Link href="/akademik/jadwal-pelajaran">Jadwal Pelajaran</Link>, '/akademik/jadwal-pelajaran'),
+                getItem('Jadwal Pelajaran', 'jadwal-pelajaran', null, [
+                    getItem(<Link href="/akademik/jadwal-pelajaran/rombel">Jadwal RomBel</Link>, '/akademik/jadwal-pelajaran/rombel'),
+                    getItem(<Link href="/akademik/jadwal-pelajaran/guru">Jadwal Mengajar Guru</Link>, '/akademik/jadwal-pelajaran/guru')
+                ]),
                 getItem(<Link href="/akademik/capaian-pembelajaran">Capaian Pembelajaran</Link>, '/akademik/capaian-pembelajaran'),
                 getItem(<Link href="/akademik/pembagian-tugas">Pembagian Tugas</Link>, '/akademik/pembagian-tugas')
             ]));
@@ -101,12 +126,11 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
         // 4. Presensi
         if (hasPermission('VIEW_PRESENSI') || user?.role?.name === 'ADMIN') {
             items.push(getItem('Presensi', 'presensi', <CheckSquareOutlined />, [
-                getItem(<Link href="/presensi">Dashboard</Link>, '/presensi'),
                 getItem(<Link href="/presensi/harian-siswa">Harian Siswa</Link>, '/presensi/harian-siswa'),
                 getItem(<Link href="/presensi/mapel-siswa">Mapel Siswa</Link>, '/presensi/mapel-siswa'),
                 getItem(<Link href="/presensi/presensi-guru">Kehadiran Guru</Link>, '/presensi/presensi-guru'),
                 getItem(<Link href="/presensi/perizinan">Perizinan</Link>, '/presensi/perizinan'),
-                getItem(<Link href="/presensi/scan">Scan Barcode/RFID</Link>, '/presensi/scan')
+                getItem(<Link href="/kiosk" target="_blank">Scan Barcode/RFID</Link>, '/kiosk')
             ]));
         }
 
@@ -121,7 +145,6 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
         // 6. Rapor
         if (hasPermission('VIEW_RAPOR') || user?.role?.name === 'ADMIN') {
             items.push(getItem('Rapor', 'rapor', <DatabaseOutlined />, [
-                getItem(<Link href="/rapor">Dashboard Rapor</Link>, '/rapor'),
                 getItem(<Link href="/rapor/cetak/kelengkapan">Cetak Rapor</Link>, '/rapor/cetak/kelengkapan'),
                 getItem(<Link href="/rapor/catatan-kenaikan/vii-a">Catatan Kenaikan</Link>, '/rapor/catatan-kenaikan/vii-a'),
                 getItem(<Link href="/rapor/validasi-kunci/vii-a">Validasi & Kunci</Link>, '/rapor/validasi-kunci/vii-a')
@@ -141,7 +164,7 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
         // 8. Pengaturan
         if (hasPermission('VIEW_PENGATURAN') || user?.role?.name === 'ADMIN') {
             const pengaturanChildren: MenuItem[] = [];
-            
+
             pengaturanChildren.push(getItem(<Link href="/pengaturan/identitas-sekolah">Identitas Sekolah</Link>, '/pengaturan/identitas-sekolah'));
             pengaturanChildren.push(getItem(<Link href="/pengaturan/tahun-ajaran">Tahun Ajaran</Link>, '/pengaturan/tahun-ajaran'));
             pengaturanChildren.push(getItem(<Link href="/pengaturan/users">Users</Link>, '/pengaturan/users'));

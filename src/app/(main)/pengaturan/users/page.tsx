@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Form, message, Breadcrumb, App } from 'antd';
+import { Form, Breadcrumb, App } from 'antd';
 import { systemUserService } from '@/services/systemUser.service';
 import { userService } from '@/services/user.service';
+import { guruStafService } from '@/services/data-induk/guru-staf.service';
 import api from '@/services/api';
 
 import { useAuthStore } from '@/store/useAuthStore';
@@ -14,14 +15,14 @@ import UserTable from './_components/UserTable';
 import UserModal from './_components/UserModal';
 
 export default function SystemUsersPage() {
-  const { modal } = App.useApp();
+  const { modal, message } = App.useApp();
   const { user } = useAuthStore();
   const [data, setData] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
   const [karyawans, setKaryawans] = useState<any[]>([]);
   
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(true);
@@ -29,7 +30,7 @@ export default function SystemUsersPage() {
 
   const hasPermission = (requiredPermission: string) => {
       if (!user) return false;
-      if (user?.role?.name === 'SUPER_ADMIN') return true;
+      if (user?.role?.name === 'SUPER_ADMIN' || user?.role?.name === 'ADMIN') return true;
       return user?.role?.permissions?.includes(requiredPermission) || false;
   };
 
@@ -48,10 +49,10 @@ export default function SystemUsersPage() {
       }
       setData(filteredData);
 
-      const rRes = await api.get('/roles');
-      setRoles(rRes.data);
+      const rolesData = await userService.getRoles();
+      setRoles(rolesData);
       
-      const kRes = await userService.getAll();
+      const kRes = await guruStafService.findAll();
       setKaryawans(kRes);
       
       setSelectedRowKeys([]);
@@ -75,22 +76,24 @@ export default function SystemUsersPage() {
     setIsModalOpen(true);
   };
 
-  const openEditModal = () => {
-    if (selectedRowKeys.length === 0) return;
-    const record = data.find(u => u.id === selectedRowKeys[0]);
+  const openEditModal = (id?: string) => {
+    const targetId = typeof id === 'string' ? id : (selectedRowKeys.length > 0 ? selectedRowKeys[0] : null);
+    if (!targetId) return;
+    const record = data.find(u => u.id === targetId);
     if (record) {
       setEditingId(record.id);
       form.setFieldsValue({
         username: record.username,
-        namaLengkap: record.namaLengkap,
+        name: record.name,
         roleId: record.roleId,
       });
       setIsModalOpen(true);
     }
   };
 
-  const handleDelete = async () => {
-    if (selectedRowKeys.length === 0) return;
+  const handleDelete = async (id?: string) => {
+    const targetId = typeof id === 'string' ? id : (selectedRowKeys.length > 0 ? selectedRowKeys[0] : null);
+    if (!targetId) return;
     modal.confirm({
       title: 'Delete User',
       content: 'Aksi ini tidak bisa dibatalkan.',
@@ -99,7 +102,7 @@ export default function SystemUsersPage() {
       cancelText: 'Cancel',
       onOk: async () => {
         try {
-          await systemUserService.delete(Number(selectedRowKeys[0]));
+          await systemUserService.delete(targetId as string);
           message.success('User dihapus');
           setTimeout(() => fetchData(), 0);
         } catch {
@@ -112,7 +115,7 @@ export default function SystemUsersPage() {
   const handleSubmit = async (rawValues: any) => {
     try {
       const values = { ...rawValues };
-      if (values.namaLengkap) values.namaLengkap = values.namaLengkap.toUpperCase();
+      if (values.name) values.name = values.name.toUpperCase();
       
       if (editingId) {
         await systemUserService.update(editingId, values);
@@ -150,6 +153,8 @@ export default function SystemUsersPage() {
               loading={loading}
               selectedRowKeys={selectedRowKeys}
               setSelectedRowKeys={setSelectedRowKeys}
+              onEdit={canEdit ? openEditModal : undefined}
+              onDelete={canDelete ? handleDelete : undefined}
             />
             <UserModal
               isModalOpen={isModalOpen}

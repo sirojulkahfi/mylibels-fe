@@ -1,6 +1,10 @@
 import api from '../api';
 
 export const raporService = {
+  getArsipRapor: async () => {
+    const response = await api.get('/rapor/arsip');
+    return response.data;
+  },
   getStatusRapor: async (kelasId: string, semester: string, tahunAjaran: string) => {
     const response = await api.get('/rapor/status', {
       params: { kelasId, semester, tahunAjaran }

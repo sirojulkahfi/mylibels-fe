@@ -3,14 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Tag, Space, Tooltip, Popconfirm, Modal, Form, Input, Select, Radio, App } from 'antd';
 import { useRouter } from 'next/navigation';
-import { PlusOutlined, ReloadOutlined, ExportOutlined, ImportOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined, ExportOutlined, ImportOutlined, EditOutlined, DeleteOutlined, EyeOutlined, SwapOutlined } from '@ant-design/icons';
 import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
 import ButtonToolbar from '@/components/ui/ButtonToolbar';
 import { getColumnSearchProps } from '@/utils/tableUtils';
 import { siswaService } from '@/services/data-induk/siswa.service';
 import { kelasService } from '@/services/data-induk/kelas.service';
 import SiswaModal from './_components/SiswaModal';
-
+import MutasiSiswaModal from './_components/MutasiSiswaModal';
 const { Option } = Select;
 
 interface SiswaData {
@@ -33,7 +33,13 @@ export default function SiswaPage() {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingSiswa, setEditingSiswa] = useState<SiswaData | null>(null);
   const [form] = Form.useForm();
+  
+  const [isMutasiModalVisible, setIsMutasiModalVisible] = useState(false);
+  const [currentSiswa, setCurrentSiswa] = useState<SiswaData | null>(null);
+  const [mutasiForm] = Form.useForm();
+
   const router = useRouter();
 
     const fetchData = async () => {
@@ -71,16 +77,47 @@ export default function SiswaPage() {
 
   const handleAdd = () => {
     setEditingId(null);
-    form.resetFields();
+    setEditingSiswa(null);
     setIsModalVisible(true);
   };
 
   const handleEdit = (record: SiswaData) => {
     setEditingId(record.id);
-    form.setFieldsValue({
-      ...record,
-    });
+    setEditingSiswa(record);
     setIsModalVisible(true);
+  };
+
+
+  const handleMutasi = async (record: SiswaData) => {
+    setCurrentSiswa(record);
+    setIsMutasiModalVisible(true);
+    try {
+      const res = await siswaService.findOne(record.id);
+      setCurrentSiswa(res);
+    } catch (error) {
+      console.error(error);
+      message.error('Gagal mengambil data siswa');
+    }
+  };
+
+  const handleMutasiOk = async () => {
+    try {
+      const values = await mutasiForm.validateFields();
+      if (currentSiswa) {
+        await siswaService.update(currentSiswa.id, {
+          ...currentSiswa,
+          status: values.status,
+          class: values.class,
+        });
+        message.success('Data mutasi berhasil disimpan');
+        setIsMutasiModalVisible(false);
+        fetchData();
+      }
+    } catch (error: any) {
+      if (error.errorFields) return;
+      console.error(error);
+      message.error(error?.response?.data?.message || 'Gagal menyimpan data mutasi');
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -192,19 +229,24 @@ export default function SiswaPage() {
     {
       title: 'Aksi',
       key: 'action',
-      width: 150,
+      width: 180,
       align: 'center' as const,
       render: (_: any, record: SiswaData) => (
         <Space size="middle">
-          <Tooltip title="Detail">
-            <ButtonToolbar message="" icon={<EyeOutlined style={{ color: '#1677ff' }} />} className="bg-blue-50 text-blue-600 hover:bg-blue-100" />
-          </Tooltip>
           <Tooltip title="Edit">
             <ButtonToolbar 
               message="" 
               icon={<EditOutlined style={{ color: '#faad14' }} />} 
               className="bg-yellow-50 text-yellow-600 hover:bg-yellow-100" 
               onClick={() => handleEdit(record)}
+            />
+          </Tooltip>
+          <Tooltip title="Mutasi">
+            <ButtonToolbar 
+              message="" 
+              icon={<SwapOutlined style={{ color: '#fa8c16' }} />} 
+              className="bg-orange-50 text-orange-600 hover:bg-orange-100" 
+              onClick={() => handleMutasi(record)}
             />
           </Tooltip>
           <Popconfirm
@@ -294,10 +336,20 @@ export default function SiswaPage() {
       <SiswaModal
         isModalVisible={isModalVisible}
         editingId={editingId}
+        initialData={editingSiswa}
         form={form}
         kelasData={kelasData}
         onCancel={() => setIsModalVisible(false)}
         onOk={handleModalOk}
+      />
+      <MutasiSiswaModal
+        isModalVisible={isMutasiModalVisible}
+        form={mutasiForm}
+        siswaData={currentSiswa}
+        kelasData={kelasData}
+        loading={loading}
+        onCancel={() => setIsMutasiModalVisible(false)}
+        onOk={handleMutasiOk}
       />
     </div>
   );

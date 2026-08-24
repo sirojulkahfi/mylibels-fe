@@ -86,7 +86,7 @@ export default function IdentitasSekolahPage() {
                   name="name"
                   rules={[{ required: true, message: 'Nama sekolah wajib diisi!' }]}
                 >
-                  <Input placeholder="Contoh: SMAN 1 Jakarta" size="large" />
+                  <Input placeholder="Contoh: SMPN 15 Bandung" size="large" />
                 </Form.Item>
               </Col>
               <Col xs={24} md={12}>

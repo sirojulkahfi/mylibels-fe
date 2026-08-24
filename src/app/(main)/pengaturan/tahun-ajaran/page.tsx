@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Button, Tag, Breadcrumb, App, Modal, Form, Input, DatePicker, Switch } from 'antd';
+import { Table, Button, Tag, Breadcrumb, App } from 'antd';
 import { 
   PlusOutlined,
   EditOutlined,
@@ -16,6 +16,7 @@ import dayjs from 'dayjs';
 
 import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
 import { tahunAjaranService } from '@/services/system/tahun-ajaran.service';
+import TahunAjaranModal from './_components/TahunAjaranModal';
 
 export default function TahunAjaranPage() {
   const router = useRouter();
@@ -25,9 +26,7 @@ export default function TahunAjaranPage() {
   const [loading, setLoading] = useState(true);
   
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const [form] = Form.useForm();
+  const [selectedRecord, setSelectedRecord] = useState<any>(null);
 
   const fetchData = async () => {
     try {
@@ -45,47 +44,8 @@ export default function TahunAjaranPage() {
   }, []);
 
   const handleOpenModal = (record?: any) => {
-    if (record) {
-      setEditingId(record.id);
-      form.setFieldsValue({
-        name: record.name,
-        isActive: record.isActive,
-        dates: [
-          record.startDate ? dayjs(record.startDate) : undefined,
-          record.endDate ? dayjs(record.endDate) : undefined
-        ]
-      });
-    } else {
-      setEditingId(null);
-      form.resetFields();
-    }
+    setSelectedRecord(record || null);
     setIsModalVisible(true);
-  };
-
-  const handleSubmit = async (values: any) => {
-    try {
-      setSaving(true);
-      const payload = {
-        name: values.name,
-        isActive: values.isActive,
-        startDate: values.dates ? values.dates[0].toDate() : undefined,
-        endDate: values.dates ? values.dates[1].toDate() : undefined,
-      };
-
-      if (editingId) {
-        await tahunAjaranService.update(editingId, payload);
-        message.success("Tahun ajaran berhasil diperbarui");
-      } else {
-        await tahunAjaranService.create(payload);
-        message.success("Tahun ajaran berhasil ditambahkan");
-      }
-      setIsModalVisible(false);
-      fetchData();
-    } catch (error) {
-      message.error("Gagal menyimpan data tahun ajaran");
-    } finally {
-      setSaving(false);
-    }
   };
 
   const handleDelete = (id: string) => {
@@ -213,51 +173,12 @@ export default function TahunAjaranPage() {
         />
       </div>
 
-      <Modal
-        title={editingId ? "Edit Tahun Ajaran" : "Tambah Tahun Ajaran Baru"}
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        destroyOnClose
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          initialValues={{ isActive: false }}
-          className="mt-4"
-        >
-          <Form.Item
-            name="name"
-            label="Nama Tahun Ajaran"
-            rules={[{ required: true, message: 'Harap isi nama tahun ajaran!' }]}
-          >
-            <Input placeholder="Contoh: 2023/2024" />
-          </Form.Item>
-
-          <Form.Item
-            name="dates"
-            label="Periode"
-          >
-            <DatePicker.RangePicker className="w-full" />
-          </Form.Item>
-
-          <Form.Item
-            name="isActive"
-            label="Jadikan Sebagai Tahun Ajaran Aktif?"
-            valuePropName="checked"
-          >
-            <Switch checkedChildren="Aktif" unCheckedChildren="Tidak" />
-          </Form.Item>
-
-          <div className="flex justify-end gap-2 mt-6">
-            <Button onClick={() => setIsModalVisible(false)}>Batal</Button>
-            <Button type="primary" htmlType="submit" loading={saving} className="bg-blue-600">
-              Simpan
-            </Button>
-          </div>
-        </Form>
-      </Modal>
+      <TahunAjaranModal 
+        isOpen={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        onSuccess={() => fetchData()}
+        initialData={selectedRecord}
+      />
     </div>
   );
 }

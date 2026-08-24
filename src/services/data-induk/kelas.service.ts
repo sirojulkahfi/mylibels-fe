@@ -1,9 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from '../api';
 
 export const kelasService = {
   findAll: async () => {
     const response = await api.get('/data-induk/kelas');
+    return response.data;
+  },
+  findOne: async (id: string) => {
+    const response = await api.get(`/data-induk/kelas/${id}`);
     return response.data;
   },
   create: async (data: any) => {

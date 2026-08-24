@@ -3,10 +3,22 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import Cookies from 'js-cookie';
 
 interface User {
-  id: number;
+  id: string;
   username: string;
   name?: string;
   namaLengkap?: string;
+  guruStaf?: {
+    id: string;
+    nip: string;
+    subject: string;
+  } | null;
+  siswa?: {
+    id: string;
+    nis: string;
+    nisn: string;
+    name: string;
+    class: string;
+  } | null;
   role: {
     name: string;
     permissions?: string[];

@@ -9,6 +9,7 @@ import { UserOutlined, LockOutlined, EyeOutlined, EyeInvisibleOutlined } from "@
 import { authService } from "@/services/auth.service";
 import { settingsService } from "@/services/system/settings.service";
 import { useAuthStore } from "@/store/useAuthStore";
+import { getDashboardRoute } from "@/utils/dashboard-route";
 
 export default function LoginPage() {
   const { login } = useAuthStore();
@@ -57,20 +58,7 @@ export default function LoginPage() {
       const res = await authService.login({ username, password });
       login(res.accessToken, res.user);
 
-      // Smart Redirect berdasarkan Role User
-      const roleName = res.user?.role?.name?.toUpperCase();
-      
-      if (roleName === 'ADMIN') {
-        router.push('/dashboard/admin');
-      } else if (roleName === 'GURU') {
-        router.push('/dashboard/guru');
-      } else if (roleName === 'WALI_KELAS' || roleName === 'WALI KELAS') {
-        router.push('/dashboard/wali-kelas');
-      } else if (roleName === 'SISWA') {
-        router.push('/dashboard/siswa'); // <--- Arahkan Siswa ke sini
-      } else {
-        router.push('/dashboard'); // Fallback
-      }
+      router.push(getDashboardRoute(res.user?.role?.name));
     } catch (err: any) {
       setError(err.response?.data?.message || "Terjadi kesalahan pada server. Pastikan username/password benar.");
     } finally {

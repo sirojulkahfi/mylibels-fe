@@ -152,15 +152,7 @@ export default function RaporCatatanKenaikanPage() {
       </div>
 
       <ToolbarWrapper>
-        <Button 
-          icon={<ArrowLeftOutlined />} 
-          onClick={() => router.push('/rapor')}
-          className="border-0 flex items-center shadow-none hover:opacity-80 px-3 ml-2 mr-4"
-          style={{ color: '#ffffff', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
-        >
-          Kembali
-        </Button>
-        <div className="flex flex-col mr-4 hidden md:flex">
+        <div className="flex flex-col ml-4 mr-4 hidden md:flex">
           <span className="text-white font-bold leading-tight">Catatan & Kenaikan Kelas</span>
           <span className="text-gray-200 text-xs">Kelas {kelasName}</span>
         </div>
@@ -207,7 +199,7 @@ export default function RaporCatatanKenaikanPage() {
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
         footer={null}
-        destroyOnClose
+        destroyOnHidden
       >
         <Form layout="vertical" form={form} onFinish={handleSubmit} className="mt-4">
           <Form.Item name="notes" label="Catatan Perkembangan Siswa" rules={[{ required: true }]}>

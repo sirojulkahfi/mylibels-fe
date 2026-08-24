@@ -2,16 +2,18 @@
 import React, { useRef } from 'react';
 import { Table, Input, Button, Space, Tag } from 'antd';
 import type { InputRef } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 interface Props {
   data: any[];
   loading: boolean;
   selectedRowKeys: React.Key[];
   setSelectedRowKeys: (keys: React.Key[]) => void;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
-export default function UserTable({ data, loading, selectedRowKeys, setSelectedRowKeys }: Props) {
+export default function UserTable({ data, loading, selectedRowKeys, setSelectedRowKeys, onEdit, onDelete }: Props) {
   const searchInput = useRef<InputRef>(null);
 
   const getColumnSearchProps = (dataIndex: string): any => ({
@@ -43,10 +45,43 @@ export default function UserTable({ data, loading, selectedRowKeys, setSelectedR
   });
 
   const columns = [
-    { title: 'ID', dataIndex: 'id', key: 'id' },
     { title: 'Username', dataIndex: 'username', key: 'username', ...getColumnSearchProps('username') },
-    { title: 'Nama Lengkap', dataIndex: 'namaLengkap', key: 'namaLengkap', ...getColumnSearchProps('namaLengkap') },
+    { title: 'Nama Lengkap', dataIndex: 'name', key: 'name', ...getColumnSearchProps('name') },
     { title: 'Role', dataIndex: ['role', 'name'], key: 'role', render: (val: string) => <Tag color="blue">{val || 'No Role'}</Tag> },
+    { 
+      title: 'Aksi', 
+      key: 'action', 
+      width: 100,
+      align: 'center' as const,
+      render: (_: any, record: any) => (
+        <Space size="middle">
+          {onEdit && (
+            <Button 
+              type="text" 
+              icon={<EditOutlined />} 
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedRowKeys([record.id]);
+                onEdit(record.id);
+              }} 
+              className="text-blue-600"
+            />
+          )}
+          {onDelete && (
+            <Button 
+              type="text" 
+              danger 
+              icon={<DeleteOutlined />} 
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedRowKeys([record.id]);
+                onDelete(record.id);
+              }} 
+            />
+          )}
+        </Space>
+      )
+    },
   ];
 
   return (

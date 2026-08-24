@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Form, Input, Select, Radio, FormInstance } from 'antd';
 
 const { Option } = Select;
@@ -8,6 +8,7 @@ interface SiswaModalProps {
   editingId: string | null;
   form: FormInstance;
   kelasData: any[];
+  initialData?: any | null;
   onCancel: () => void;
   onOk: () => void;
 }
@@ -17,9 +18,26 @@ export default function SiswaModal({
   editingId,
   form,
   kelasData,
+  initialData,
   onCancel,
   onOk,
 }: SiswaModalProps) {
+  useEffect(() => {
+    if (isModalVisible) {
+      if (editingId && initialData) {
+        form.setFieldsValue(initialData);
+      } else {
+        form.resetFields();
+      }
+    }
+  }, [isModalVisible, editingId, initialData, form]);
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
+
   return (
     <Modal
       title={editingId ? "Edit Data Siswa" : "Tambah Data Siswa"}
@@ -29,6 +47,7 @@ export default function SiswaModal({
       okText="Simpan"
       cancelText="Batal"
       width={600}
+      forceRender
     >
       <Form form={form} layout="vertical">
         <div className="grid grid-cols-2 gap-4">

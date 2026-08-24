@@ -50,7 +50,7 @@ export default function ModalCreate({ visible, onClose, onSuccess }: Props) {
                 <Form.Item name="value" label="Value" rules={[{ required: true, message: 'Please enter setting value' }]}>
                     <Input placeholder="e.g. Painting System" />
                 </Form.Item>
-                <Form.Item name="description" label="Description">
+                <Form.Item name="group" label="Description">
                     <Input.TextArea placeholder="Enter description" rows={2} />
                 </Form.Item>
             </Form>

@@ -11,19 +11,19 @@ export const userService = {
     return response.data;
   },
   getRoles: async () => {
-    const response = await api.get('/roles');
-    return response.data;
+    const response = await api.get('/permission/roles');
+    return response.data.data || response.data;
   },
   createRole: async (name: string) => {
-    const response = await api.post('/roles', { name });
+    const response = await api.post('/permission/roles', { name });
     return response.data;
   },
-  updateRolePermissions: async (id: number, permissions: string[]) => {
-    const response = await api.put(`/roles/${id}/permissions`, { permissions });
+  updateRolePermissions: async (id: string, permissions: string[]) => {
+    const response = await api.put(`/permission/roles/${id}/permissions`, { permissions });
     return response.data;
   },
-  deleteRole: async (id: number) => {
-    const response = await api.delete(`/roles/${id}`);
+  deleteRole: async (id: string) => {
+    const response = await api.delete(`/permission/roles/${id}`);
     return response.data;
   },
   create: async (data: any) => {

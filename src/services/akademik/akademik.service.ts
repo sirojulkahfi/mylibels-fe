@@ -22,6 +22,11 @@ export const akademikService = {
     return response.data;
   },
 
+  generateDummySchedule: async () => {
+    const response = await api.post('/akademik/jadwal/generate');
+    return response.data;
+  },
+
   updateJadwal: async (id: string, data: any) => {
     const response = await api.patch(`/akademik/jadwal/${id}`, data);
     return response.data;

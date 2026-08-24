@@ -10,6 +10,7 @@ import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
 import ButtonToolbar from '@/components/ui/ButtonToolbar';
 import { siswaService } from '@/services/data-induk/siswa.service';
 import { kelasService } from '@/services/data-induk/kelas.service';
+import { presensiService } from '@/services/presensi/presensi.service';
 
 export default function InputPresensiHarianPage({ params }: { params: Promise<{ kelasId: string }> }) {
   const router = useRouter();
@@ -37,12 +38,15 @@ export default function InputPresensiHarianPage({ params }: { params: Promise<{ 
 
         // Ambil data siswa
         const siswa = await siswaService.findAll();
-        const siswaKelas = (siswa || []).filter((s: any) => s.kelasId === kelasId);
+        const siswaKelas = (siswa || []).filter((s: any) => s.class === foundKelas?.name);
+        const todayIso = new Date().toISOString().slice(0, 10);
+        const existingPresensi = await presensiService.findAllSiswa({ kelasId, tanggal: todayIso });
+        const statusToCode: Record<string, string> = { Hadir: 'H', Sakit: 'S', Izin: 'I', Alpha: 'A' };
         
-        // Setup initial status to 'H' (Hadir)
         const presensiData = siswaKelas.map((s: any) => ({
           ...s,
-          status: 'H',
+          presensiId: existingPresensi?.find((item: any) => item.siswaId === s.id)?.id,
+          status: statusToCode[existingPresensi?.find((item: any) => item.siswaId === s.id)?.status] || 'H',
           keterangan: ''
         }));
         
@@ -61,13 +65,32 @@ export default function InputPresensiHarianPage({ params }: { params: Promise<{ 
     setData(prev => prev.map(item => item.id === id ? { ...item, status: val } : item));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setSaving(true);
-    setTimeout(() => {
+    try {
+      const statusToValue: Record<string, string> = { H: 'Hadir', S: 'Sakit', I: 'Izin', A: 'Alpha' };
+      const tanggal = new Date();
+      await Promise.all(data.map((item: any) => {
+        const payload = {
+          siswaId: item.id,
+          kelasId,
+          tanggal: tanggal.toISOString(),
+          status: statusToValue[item.status] || 'Hadir',
+          keterangan: item.keterangan || null,
+          jenis: 'Harian',
+        };
+        return item.presensiId
+          ? presensiService.updateSiswa(item.presensiId, payload)
+          : presensiService.createSiswa(payload);
+      }));
       setSaving(false);
       message.success('Presensi berhasil disimpan!');
       router.push('/presensi/harian-siswa');
-    }, 800);
+    } catch (error) {
+      console.error(error);
+      message.error('Gagal menyimpan presensi ke database');
+      setSaving(false);
+    }
   };
 
   const columns = [
@@ -94,19 +117,19 @@ export default function InputPresensiHarianPage({ params }: { params: Promise<{ 
       title: 'Status Kehadiran',
       dataIndex: 'status',
       key: 'status',
-      width: 350,
+      width: 380,
       align: 'center' as const,
       render: (status: string, record: any) => (
         <Radio.Group 
           value={status} 
           onChange={(e) => handleStatusChange(record.id, e.target.value)}
           buttonStyle="solid"
-          className="flex justify-center"
+          className="inline-flex justify-center whitespace-nowrap"
         >
-          <Radio.Button value="H" className="w-16 text-center data-[state=checked]:bg-emerald-500">Hadir</Radio.Button>
-          <Radio.Button value="S" className="w-16 text-center">Sakit</Radio.Button>
-          <Radio.Button value="I" className="w-16 text-center">Izin</Radio.Button>
-          <Radio.Button value="A" className="w-16 text-center">Alpa</Radio.Button>
+          <Radio.Button value="H" className="w-20 text-center">Hadir</Radio.Button>
+          <Radio.Button value="S" className="w-20 text-center">Sakit</Radio.Button>
+          <Radio.Button value="I" className="w-20 text-center">Izin</Radio.Button>
+          <Radio.Button value="A" className="w-20 text-center">Alpa</Radio.Button>
         </Radio.Group>
       ),
     }

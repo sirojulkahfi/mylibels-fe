@@ -10,6 +10,8 @@ import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
 import { penilaianService } from '@/services/penilaian/penilaian.service';
 import { siswaService } from '@/services/data-induk/siswa.service';
 import { akademikService } from '@/services/akademik/akademik.service';
+import { kelasService } from '@/services/data-induk/kelas.service';
+import { mataPelajaranService } from '@/services/data-induk/mata-pelajaran.service';
 
 export default function FormatifDetail({ params }: { params: Promise<{ rombelMapelId: string }> }) {
   const router = useRouter();
@@ -25,19 +27,26 @@ export default function FormatifDetail({ params }: { params: Promise<{ rombelMap
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Ambil info mapel/rombel dari jadwal
-        const jadwalList = await akademikService.findAllJadwal().catch(() => []);
+        // Ambil info mapel/rombel dari jadwal beserta kelas dan mapel
+        const [jadwalList, kelasList, mapelList] = await Promise.all([
+          akademikService.findAllJadwal().catch(() => []),
+          kelasService.findAll().catch(() => []),
+          mataPelajaranService.findAll().catch(() => [])
+        ]);
+        
         const jadwal = jadwalList.find((j: any) => j.id === rombelMapelId);
         if (jadwal) {
+          const kls = kelasList.find((k: any) => k.id === jadwal.kelasId);
+          const mpl = mapelList.find((m: any) => m.id === jadwal.mapelId);
+          
           setInfo({
             ...jadwal,
-            kelasName: jadwal.kelas?.name || jadwal.kelasId,
-            mapelName: jadwal.mataPelajaran?.name || jadwal.mapelId
+            kelasName: kls?.name || jadwal.kelas?.name || jadwal.kelasId,
+            mapelName: mpl?.name || jadwal.mataPelajaran?.name || jadwal.mapelId
           });
         } else {
           setInfo({ kelasName: 'Kelas', mapelName: 'Mata Pelajaran' });
         }
-        
         // Ambil siswa dan nilai
         const nilaiRes = await penilaianService.findAllFormatif({ rombelMapelId: rombelMapelId });
         if (nilaiRes && nilaiRes.length > 0) {
@@ -187,17 +196,18 @@ export default function FormatifDetail({ params }: { params: Promise<{ rombelMap
       </div>
 
       <ToolbarWrapper>
-        <Space>
-          <Button 
-            type="text" 
-            icon={<ArrowLeftOutlined />} 
-            className="text-white hover:text-white hover:bg-white/20"
-            onClick={() => router.back()}
-          />
-          <span className="text-white font-semibold">
-            Input Nilai Formatif: {info?.mapelName || 'Mata Pelajaran'} - {info?.kelasName || 'Kelas'}
-          </span>
-        </Space>
+        <Button 
+          icon={<ArrowLeftOutlined />} 
+          onClick={() => router.push('/penilaian/formatif')}
+          className="border-0 flex items-center shadow-none hover:opacity-80 px-3 ml-2 mr-4"
+          style={{ color: '#ffffff', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
+        >
+          Kembali
+        </Button>
+        <div className="flex flex-col mr-4 hidden md:flex">
+          <span className="text-white font-bold leading-tight">Input Nilai Formatif</span>
+          <span className="text-gray-200 text-xs">{info?.mapelName || 'Mata Pelajaran'} - {info?.kelasName || 'Kelas'}</span>
+        </div>
         
         <Button 
           type="primary" 

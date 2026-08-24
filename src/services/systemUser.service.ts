@@ -10,11 +10,11 @@ export const systemUserService = {
     const response = await api.post('/system-users', data);
     return response.data;
   },
-  update: async (id: number, data: any) => {
+  update: async (id: string, data: any) => {
     const response = await api.put(`/system-users/${id}`, data);
     return response.data;
   },
-  delete: async (id: number) => {
+  delete: async (id: string) => {
     const response = await api.delete(`/system-users/${id}`);
     return response.data;
   },

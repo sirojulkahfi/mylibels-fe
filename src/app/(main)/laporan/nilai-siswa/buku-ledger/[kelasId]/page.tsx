@@ -15,7 +15,7 @@ import ButtonToolbar from '@/components/ui/ButtonToolbar';
 import { kelasService } from '@/services/data-induk/kelas.service';
 import { siswaService } from '@/services/data-induk/siswa.service';
 import { penilaianService } from '@/services/penilaian/penilaian.service';
-import { mapelService } from '@/services/data-induk/mapel.service';
+import { mataPelajaranService } from '@/services/data-induk/mata-pelajaran.service';
 
 export default function BukuLedgerPage() {
   const router = useRouter();
@@ -38,7 +38,7 @@ export default function BukuLedgerPage() {
         else setKelasName('Tidak Ditemukan');
 
         // Ambil data mapel
-        const mapelList = await mapelService.findAll().catch(() => []);
+        const mapelList = await mataPelajaranService.findAll().catch(() => []);
 
         // Ambil siswa berdasarkan kelas
         const allSiswa = await siswaService.findAll();

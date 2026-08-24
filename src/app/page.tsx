@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
+import { getDashboardRoute } from '@/utils/dashboard-route';
 
 export default function RootPage() {
   const router = useRouter();
@@ -14,18 +15,7 @@ export default function RootPage() {
       return;
     }
 
-    const roleName = user?.role?.name?.toUpperCase();
-    if (roleName === 'ADMIN') {
-      router.push('/dashboard/admin');
-    } else if (roleName === 'GURU') {
-      router.push('/dashboard/guru');
-    } else if (roleName === 'WALI_KELAS' || roleName === 'WALI KELAS') {
-      router.push('/dashboard/wali-kelas');
-    } else if (roleName === 'SISWA') {
-      router.push('/dashboard/siswa');
-    } else {
-      router.push('/dashboard'); // fallback
-    }
+    router.push(getDashboardRoute(user?.role?.name));
   }, [user, token, router]);
 
   return (

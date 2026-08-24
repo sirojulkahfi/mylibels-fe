@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Typography, Input, Button, Card, Spin, Alert, Breadcrumb } from 'antd';
+import { Typography, Input, Button, Card, Spin, Alert } from 'antd';
 import { 
   QrcodeOutlined,
   CheckCircleFilled,
@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import Link from 'next/link';
 import { siswaService } from '@/services/data-induk/siswa.service';
+import QRScanner from '@/components/ui/QRScanner';
 
 const { Title, Text } = Typography;
 
@@ -26,17 +27,18 @@ export default function ScanPresensiPage() {
     }).catch(console.error);
   }, []);
 
-  const handleScan = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && scannedCode) {
+  const handleScan = (e: React.KeyboardEvent<HTMLInputElement> | { key: string }, textOverride?: string) => {
+    const code = textOverride || scannedCode;
+    if (e.key === 'Enter' && code) {
       setLoading(true);
       // Simulate API call
       setTimeout(() => {
         setLoading(false);
-        if (scannedCode.includes('7')) { // Dummy logic: if code has 7, success
+        if (code.includes('7')) { // Dummy logic: if code has 7, success
           setResult({
             success: true,
             name: siswaName,
-            message: 'Berhasil check-in pada 06:45 WIB'
+            message: `Berhasil check-in pada ${new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} WIB`
           });
         } else {
           setResult({
@@ -60,14 +62,7 @@ export default function ScanPresensiPage() {
   }, [result]);
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 bg-slate-50 p-4 pt-2 relative">
-      <div className="mb-2 text-gray-500 text-sm">
-        <Breadcrumb items={[
-          { title: <Link href="/presensi">Presensi</Link> },
-          { title: 'Scan Barcode / QR' },
-        ]} />
-      </div>
-
+    <div className="flex flex-col min-h-screen bg-slate-50 p-4 relative">
       <div className="flex flex-1 justify-center items-center py-10">
         <Card className="w-full max-w-lg shadow-xl border-0 rounded-2xl overflow-hidden" styles={{ body: { padding: 0 } }}>
           <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white p-8 text-center relative overflow-hidden shadow-inner">
@@ -84,15 +79,24 @@ export default function ScanPresensiPage() {
           <div className="p-8 flex flex-col items-center">
             <Input 
               autoFocus
-              placeholder="Scan Barcode / QR Code..." 
+              placeholder="Scan Barcode / QR Code Fisik..." 
               size="large"
               value={scannedCode}
               onChange={(e) => setScannedCode(e.target.value)}
               onKeyDown={handleScan}
-              className="mb-8 text-center text-lg font-mono shadow-inner border border-blue-200 hover:border-blue-400 focus:border-blue-500 rounded-xl py-2 w-4/5 mx-auto block"
+              className="mb-4 text-center text-lg font-mono shadow-inner border border-blue-200 hover:border-blue-400 focus:border-blue-500 rounded-xl py-2 w-4/5 mx-auto block"
               prefix={<QrcodeOutlined className="text-blue-500 text-xl mr-2" />}
               autoComplete="off"
             />
+            
+            <div className="w-4/5 mx-auto mb-8">
+              <QRScanner 
+                onScanSuccess={(decodedText) => {
+                  setScannedCode(decodedText);
+                  handleScan({ key: 'Enter' }, decodedText);
+                }} 
+              />
+            </div>
 
             <div className="h-32 flex items-center justify-center w-full">
               {loading ? (

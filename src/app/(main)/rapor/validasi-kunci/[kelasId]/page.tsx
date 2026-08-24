@@ -147,15 +147,7 @@ import { kelasService } from '@/services/data-induk/kelas.service';
       </div>
 
       <ToolbarWrapper>
-        <Button 
-          icon={<ArrowLeftOutlined />} 
-          onClick={() => router.push('/rapor')}
-          className="border-0 flex items-center shadow-none hover:opacity-80 px-3 ml-2 mr-4"
-          style={{ color: '#ffffff', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
-        >
-          Kembali
-        </Button>
-        <div className="flex flex-col mr-4 hidden md:flex">
+        <div className="flex flex-col ml-4 mr-4 hidden md:flex">
           <span className="text-white font-bold leading-tight">Validasi & Kunci Rapor</span>
           <span className="text-gray-200 text-xs">Kelas {kelasName}</span>
         </div>

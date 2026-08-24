@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, use } from 'react';
-import { Table, Tag, Space, App, DatePicker } from 'antd';
+import { Table, Tag, Space, App, DatePicker, Button } from 'antd';
 import { ReloadOutlined, PrinterOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
@@ -121,11 +121,14 @@ export default function LaporanRekapSiswaPage({ params }: { params: Promise<{ si
 
       <ToolbarWrapper>
         <Space>
-          <ButtonToolbar 
-            message="Kembali" 
+          <Button 
             icon={<ArrowLeftOutlined />} 
             onClick={() => router.back()}
-          />
+            className="border-0 flex items-center shadow-none hover:opacity-80 px-3"
+            style={{ color: '#ffffff', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
+          >
+            Kembali
+          </Button>
           <RangePicker 
             onChange={(dates) => setDateRange(dates)} 
             format="DD/MM/YYYY"

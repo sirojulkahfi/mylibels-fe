@@ -9,7 +9,7 @@ import type { FilterDropdownProps } from 'antd/es/table/interface';
  * @param placeholder Teks placeholder untuk input
  * @returns Object berisi props untuk disisipkan ke dalam definisi kolom tabel
  */
-export const getColumnSearchProps = <T extends any>(dataIndex: string | string[], placeholder: string = 'Cari...') => ({
+export const getColumnSearchProps = <T = any>(dataIndex: string | string[], placeholder: string = 'Cari...') => ({
   filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: FilterDropdownProps) => (
     <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
       <Input
