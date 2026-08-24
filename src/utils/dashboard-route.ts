@@ -2,6 +2,7 @@ export function getDashboardRoute(roleName?: string) {
   const role = roleName?.trim().toUpperCase().replace(/[- ]/g, '_');
 
   switch (role) {
+    case 'SUPER_ADMIN':
     case 'ADMIN':
       return '/dashboard/admin';
     case 'KEPALA_SEKOLAH':
