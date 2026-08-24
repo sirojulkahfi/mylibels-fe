@@ -122,7 +122,16 @@ export default function ScanPresensiPage() {
                   <div>
                     {result.success && <div className="font-bold text-lg text-gray-800">{result.name}</div>}
                     <div className={result.success ? 'text-emerald-700' : 'text-red-600 font-medium'}>
-                      {result.message}
+                      {result.message.split('Terlambat').map((part, index, array) => (
+                        <React.Fragment key={index}>
+                          {part}
+                          {index < array.length - 1 && (
+                            <span className="text-red-600 font-bold bg-red-100 px-2 py-0.5 rounded-full uppercase text-xs align-middle inline-block">
+                              Terlambat
+                            </span>
+                          )}
+                        </React.Fragment>
+                      ))}
                     </div>
                   </div>
                 </div>
