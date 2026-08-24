@@ -69,7 +69,7 @@ export default function PresensiHarianPage() {
       key: 'hadir',
       width: 100,
       align: 'center' as const,
-      render: (val: number, record: any) => record.status === 'Selesai' ? <span className="text-emerald-600 font-semibold">{val}</span> : '-',
+      render: (val: number) => <span className="text-emerald-600 font-semibold">{val}</span>,
     },
     {
       title: 'Absen (S/I/A)',
@@ -77,7 +77,7 @@ export default function PresensiHarianPage() {
       key: 'absen',
       width: 130,
       align: 'center' as const,
-      render: (val: number, record: any) => record.status === 'Selesai' ? <span className="text-red-500 font-semibold">{val}</span> : '-',
+      render: (val: number) => <span className="text-red-500 font-semibold">{val}</span>,
     },
     {
       title: 'Status Presensi',

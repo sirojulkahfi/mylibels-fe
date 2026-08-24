@@ -4,15 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { Table, Breadcrumb, App, Button, Modal, Form, Input, TimePicker, Space } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import axios from 'axios';
-import { useAuthStore } from '@/store/useAuthStore';
+import api from '@/services/api';
 import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 export default function ShiftPage() {
   const { message } = App.useApp();
-  const { token } = useAuthStore();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   
@@ -23,9 +19,7 @@ export default function ShiftPage() {
   const fetchShifts = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${API_URL}/system/shift`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get(`/system/shift`);
       setData(res.data);
     } catch (error) {
       message.error('Gagal mengambil data shift');
@@ -36,7 +30,7 @@ export default function ShiftPage() {
 
   useEffect(() => {
     fetchShifts();
-  }, [token]);
+  }, []);
 
   const columns = [
     { title: 'Nama Shift', dataIndex: 'name', key: 'name' },
@@ -82,9 +76,7 @@ export default function ShiftPage() {
       cancelText: 'Tidak',
       onOk: async () => {
         try {
-          await axios.delete(`${API_URL}/system/shift/${id}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+          await api.delete(`/system/shift/${id}`);
           message.success('Shift berhasil dihapus');
           fetchShifts();
         } catch (error) {
@@ -105,14 +97,10 @@ export default function ShiftPage() {
       };
 
       if (editingId) {
-        await axios.patch(`${API_URL}/system/shift/${editingId}`, payload, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.patch(`/system/shift/${editingId}`, payload);
         message.success('Shift berhasil diperbarui');
       } else {
-        await axios.post(`${API_URL}/system/shift`, payload, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await api.post(`/system/shift`, payload);
         message.success('Shift berhasil ditambahkan');
       }
       setIsModalVisible(false);
