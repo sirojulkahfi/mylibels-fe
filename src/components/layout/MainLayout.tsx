@@ -5,12 +5,15 @@ import { Layout } from 'antd';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Footer from './Footer';
-import { DesktopOutlined } from '@ant-design/icons';
+import { DesktopOutlined, LogoutOutlined } from '@ant-design/icons';
+import { useAuthStore } from '@/store/useAuthStore';
+import { Button } from 'antd';
 
 const { Content } = Layout;
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
     const [collapsed, setCollapsed] = useState(false);
+    const logout = useAuthStore((state) => state.logout);
 
     return (
         <>
@@ -18,10 +21,20 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <div className="md:hidden fixed inset-0 z-[9999] bg-slate-900 flex flex-col items-center justify-center p-8 text-center">
                 <DesktopOutlined className="text-7xl text-blue-400 mb-6 drop-shadow-lg" />
                 <h1 className="text-2xl font-bold text-white mb-3">Mode Layar Tidak Didukung</h1>
-                <p className="text-slate-300 text-sm mb-8 max-w-sm leading-relaxed">
+                <p className="text-slate-300 text-sm mb-6 max-w-sm leading-relaxed">
                     Portal Manajemen (Guru & Staf) dirancang khusus untuk layar yang lebih besar demi kenyamanan pengelolaan data. Mohon gunakan perangkat <b>Desktop</b> atau <b>Tablet</b>.
                 </p>
-                <div className="w-16 h-1 bg-blue-500 rounded-full opacity-80"></div>
+                <div className="w-16 h-1 bg-blue-500 rounded-full opacity-80 mb-8"></div>
+                <Button 
+                    type="primary" 
+                    danger 
+                    icon={<LogoutOutlined />} 
+                    onClick={() => logout()}
+                    size="large"
+                    className="shadow-lg"
+                >
+                    Keluar (Logout)
+                </Button>
             </div>
 
             {/* Main Content - Hidden on mobile */}
