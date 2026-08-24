@@ -2,13 +2,11 @@
 
 import React, { useState } from 'react';
 import { Table, Input, Select, Breadcrumb, Button, Modal, Form, Radio, App } from 'antd';
-import { 
-  SearchOutlined,
+import { SearchOutlined,
   SaveOutlined,
   ArrowLeftOutlined,
   EditOutlined,
-  ProfileOutlined
-} from '@ant-design/icons';
+  ProfileOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -32,8 +30,7 @@ export default function RaporCatatanKenaikanPage() {
   const [kelasName, setKelasName] = useState<string>('...');
   const { message } = App.useApp();
 
-  React.useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
       try {
         // Ambil nama kelas dari API
         const kelasList = await kelasService.findAll();
@@ -51,6 +48,7 @@ export default function RaporCatatanKenaikanPage() {
       }
     };
 
+  useEffect(() => {
     fetchData();
   }, [kelasId]);
 
@@ -152,6 +150,10 @@ export default function RaporCatatanKenaikanPage() {
       </div>
 
       <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchData} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
         <div className="flex flex-col ml-4 mr-4 hidden md:flex">
           <span className="text-white font-bold leading-tight">Catatan & Kenaikan Kelas</span>
           <span className="text-gray-200 text-xs">Kelas {kelasName}</span>

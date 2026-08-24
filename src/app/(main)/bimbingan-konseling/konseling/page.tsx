@@ -2,10 +2,8 @@
 
 import React, { useState } from 'react';
 import { Table, Input, Select, Breadcrumb, Button } from 'antd';
-import { 
-  SearchOutlined,
-  ArrowRightOutlined
-} from '@ant-design/icons';
+import { SearchOutlined,
+  ArrowRightOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -127,6 +125,10 @@ import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
         </div>
 
         <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchData} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
           <span className="text-white font-semibold mr-4">Daftar Siswa Konseling</span>
           <Input 
             placeholder="Cari siswa..." 

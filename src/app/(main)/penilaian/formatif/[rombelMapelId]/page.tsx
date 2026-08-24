@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, use } from 'react';
 import { Table, Button, Breadcrumb, App, Space, InputNumber } from 'antd';
-import { ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, SaveOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -24,8 +24,7 @@ export default function FormatifDetail({ params }: { params: Promise<{ rombelMap
   const unwrappedParams = use(params);
   const rombelMapelId = unwrappedParams.rombelMapelId;
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
       try {
         // Ambil info mapel/rombel dari jadwal beserta kelas dan mapel
         const [jadwalList, kelasList, mapelList] = await Promise.all([
@@ -61,6 +60,7 @@ export default function FormatifDetail({ params }: { params: Promise<{ rombelMap
       }
     };
 
+  useEffect(() => {
     fetchData();
   }, [rombelMapelId]);
 
@@ -196,6 +196,10 @@ export default function FormatifDetail({ params }: { params: Promise<{ rombelMap
       </div>
 
       <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchData} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
         <Button 
           icon={<ArrowLeftOutlined />} 
           onClick={() => router.push('/penilaian/formatif')}

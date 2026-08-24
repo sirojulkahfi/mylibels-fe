@@ -5,6 +5,7 @@ import { Layout } from 'antd';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Footer from './Footer';
+import { DesktopOutlined } from '@ant-design/icons';
 
 const { Content } = Layout;
 
@@ -12,8 +13,21 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     const [collapsed, setCollapsed] = useState(false);
 
     return (
-        <Layout style={{ height: '100vh', overflow: 'hidden' }} hasSider>
-            <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
+        <>
+            {/* Mobile Blocker */}
+            <div className="md:hidden fixed inset-0 z-[9999] bg-slate-900 flex flex-col items-center justify-center p-8 text-center">
+                <DesktopOutlined className="text-7xl text-blue-400 mb-6 drop-shadow-lg" />
+                <h1 className="text-2xl font-bold text-white mb-3">Mode Layar Tidak Didukung</h1>
+                <p className="text-slate-300 text-sm mb-8 max-w-sm leading-relaxed">
+                    Portal Manajemen (Guru & Staf) dirancang khusus untuk layar yang lebih besar demi kenyamanan pengelolaan data. Mohon gunakan perangkat <b>Desktop</b> atau <b>Tablet</b>.
+                </p>
+                <div className="w-16 h-1 bg-blue-500 rounded-full opacity-80"></div>
+            </div>
+
+            {/* Main Content - Hidden on mobile */}
+            <div className="hidden md:block h-full">
+                <Layout style={{ height: '100vh', overflow: 'hidden' }} hasSider>
+                    <Sidebar collapsed={collapsed} onCollapse={setCollapsed} />
             
             <Layout style={{ 
                 marginLeft: collapsed ? 80 : 210, 
@@ -48,10 +62,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                     >
                         {children}
                     </div>
-                </Content>
-                
-                <Footer />
+                    </Content>
+                    <Footer />
+                </Layout>
             </Layout>
-        </Layout>
+            </div>
+        </>
     );
 }

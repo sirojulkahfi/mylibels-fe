@@ -2,13 +2,11 @@
 
 import React, { useState } from 'react';
 import { Table, Breadcrumb, Button, Tag, Progress, Switch, Modal, notification } from 'antd';
-import { 
-  ArrowLeftOutlined,
+import { ArrowLeftOutlined,
   CheckCircleOutlined,
   LockOutlined,
   UnlockOutlined,
-  ExclamationCircleOutlined
-} from '@ant-design/icons';
+  ExclamationCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
@@ -29,8 +27,7 @@ import { kelasService } from '@/services/data-induk/kelas.service';
     const [data, setData] = useState<any[]>([]);
     const [kelasName, setKelasName] = useState<string>('...');
 
-    React.useEffect(() => {
-      const fetchStatus = async () => {
+    const fetchStatus = async () => {
         try {
           // Ambil nama kelas dari API
           const kelasList = await kelasService.findAll();
@@ -53,10 +50,11 @@ import { kelasService } from '@/services/data-induk/kelas.service';
         } finally {
           setLoading(false);
         }
-      };
+    };
 
-      fetchStatus();
-    }, [kelasId]);
+  useEffect(() => {
+    fetchStatus();
+  }, [kelasId]);
 
     const columns = [
       {
@@ -147,6 +145,10 @@ import { kelasService } from '@/services/data-induk/kelas.service';
       </div>
 
       <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchStatus} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
         <div className="flex flex-col ml-4 mr-4 hidden md:flex">
           <span className="text-white font-bold leading-tight">Validasi & Kunci Rapor</span>
           <span className="text-gray-200 text-xs">Kelas {kelasName}</span>

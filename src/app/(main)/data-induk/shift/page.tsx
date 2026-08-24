@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Table, Breadcrumb, App, Button, Modal, Form, Input, TimePicker, Space } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import api from '@/services/api';
 import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
@@ -117,6 +117,10 @@ export default function ShiftPage() {
       </div>
       
       <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchShifts} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
         <span className="text-white font-bold leading-tight flex-1 mr-4">Master Data Shift</span>
         <Button icon={<PlusOutlined />} onClick={handleAdd} type="primary" className="bg-emerald-500">
           Tambah Shift

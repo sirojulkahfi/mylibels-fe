@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, use } from 'react';
 import { Table, Button, Breadcrumb, App, Radio, Space } from 'antd';
-import { ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, SaveOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -26,8 +26,7 @@ export default function InputPresensiHarianPage({ params }: { params: Promise<{ 
   // Tanggal Hari Ini
   const today = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
       try {
         setLoading(true);
         // Ambil nama kelas
@@ -63,6 +62,7 @@ export default function InputPresensiHarianPage({ params }: { params: Promise<{ 
       }
     };
 
+  useEffect(() => {
     fetchData();
   }, [kelasId, message]);
 
@@ -171,6 +171,10 @@ export default function InputPresensiHarianPage({ params }: { params: Promise<{ 
       </div>
 
       <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchData} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
         <Button 
           icon={<ArrowLeftOutlined />} 
           onClick={() => router.push('/presensi/harian-siswa')}

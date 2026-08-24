@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Breadcrumb, App, Tag } from 'antd';
-import { ArrowRightOutlined, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { ArrowRightOutlined, CheckCircleOutlined, ClockCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -15,8 +15,7 @@ export default function PresensiHarianPage() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetchPresensi = async () => {
+  const fetchPresensi = async () => {
       try {
         const res = await presensiService.getRekapHarianSiswa();
         
@@ -32,6 +31,7 @@ export default function PresensiHarianPage() {
       }
     };
 
+  useEffect(() => {
     fetchPresensi();
   }, []);
 
@@ -125,6 +125,10 @@ export default function PresensiHarianPage() {
       </div>
 
       <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchPresensi} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
         <span className="text-white font-semibold">Pilih Kelas untuk Presensi Harian</span>
       </ToolbarWrapper>
 

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, use } from 'react';
 import { Table, Button, Breadcrumb, App, Space, Select } from 'antd';
-import { ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, SaveOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -22,8 +22,7 @@ export default function NilaiEkskulDetail({ params }: { params: Promise<{ ekskul
   const unwrappedParams = use(params);
   const ekskulId = unwrappedParams.ekskulId;
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
       try {
         const ekskul = await ekstrakurikulerService.findOne(ekskulId).catch(() => null);
         if (ekskul) {
@@ -45,6 +44,7 @@ export default function NilaiEkskulDetail({ params }: { params: Promise<{ ekskul
       }
     };
 
+  useEffect(() => {
     fetchData();
   }, [ekskulId]);
 
@@ -129,6 +129,10 @@ export default function NilaiEkskulDetail({ params }: { params: Promise<{ ekskul
       </div>
 
       <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchData} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
         <Button 
           icon={<ArrowLeftOutlined />} 
           onClick={() => router.push('/penilaian/ekstrakurikuler')}

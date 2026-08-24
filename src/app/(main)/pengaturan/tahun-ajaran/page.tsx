@@ -2,14 +2,12 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Button, Tag, Breadcrumb, App } from 'antd';
-import { 
-  PlusOutlined,
+import { PlusOutlined,
   EditOutlined,
   DeleteOutlined,
   CalendarOutlined,
   CheckCircleOutlined,
-  CloseCircleOutlined
-} from '@ant-design/icons';
+  CloseCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import dayjs from 'dayjs';
@@ -140,6 +138,10 @@ export default function TahunAjaranPage() {
       </div>
 
       <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchData} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
         <div className="flex items-center gap-3">
           <div className="bg-white/20 p-2 rounded-lg">
             <CalendarOutlined className="text-xl text-white" />

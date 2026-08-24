@@ -2,11 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Table, Breadcrumb, Button, Tag, App } from 'antd';
-import { 
-  ArrowLeftOutlined,
+import { ArrowLeftOutlined,
   TrophyOutlined,
-  DownloadOutlined
-} from '@ant-design/icons';
+  DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -26,8 +24,7 @@ export default function PeringkatKelasPage() {
   const [kelasName, setKelasName] = useState<string>('...');
   const [data, setData] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
       try {
         // Ambil nama kelas
         const kelasList = await kelasService.findAll();
@@ -73,6 +70,7 @@ export default function PeringkatKelasPage() {
       }
     };
 
+  useEffect(() => {
     fetchData();
   }, [kelasId, message]);
 
@@ -164,6 +162,10 @@ export default function PeringkatKelasPage() {
       </div>
 
       <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchData} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
         <Button 
           icon={<ArrowLeftOutlined />} 
           onClick={() => router.back()}

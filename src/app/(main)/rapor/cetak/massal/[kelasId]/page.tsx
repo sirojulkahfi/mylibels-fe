@@ -2,12 +2,10 @@
 
 import React, { useState } from 'react';
 import { Table, Input, Breadcrumb, Button, Tag, Progress, Switch, App } from 'antd';
-import { 
-  SearchOutlined,
+import { SearchOutlined,
   PrinterOutlined,
   ArrowLeftOutlined,
-  DownloadOutlined
-} from '@ant-design/icons';
+  DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -25,8 +23,7 @@ export default function CetakRaporMassalPage() {
   const [kelasName, setKelasName] = useState<string>('...');
   const { message } = App.useApp();
 
-  React.useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
       try {
         // Ambil nama kelas dari API
         const kelasList = await kelasService.findAll();
@@ -44,6 +41,7 @@ export default function CetakRaporMassalPage() {
       }
     };
 
+  useEffect(() => {
     fetchData();
   }, [kelasId]);
 
@@ -113,6 +111,10 @@ export default function CetakRaporMassalPage() {
       </div>
 
       <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchData} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
         <Button 
           icon={<ArrowLeftOutlined />} 
           onClick={() => router.push('/rapor')}

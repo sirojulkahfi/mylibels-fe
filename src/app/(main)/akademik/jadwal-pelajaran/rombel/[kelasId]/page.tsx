@@ -2,10 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Table, Breadcrumb, Button, Select, App } from 'antd';
-import { 
-  ArrowLeftOutlined,
-  PrinterOutlined
-} from '@ant-design/icons';
+import { ArrowLeftOutlined,
+  PrinterOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import ToolbarWrapper from '@/components/ui/ToolbarWrapper';
@@ -190,6 +188,10 @@ export default function JadwalRombelPage() {
       </div>
 
       <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchKelas} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
         <div className="flex flex-col ml-4 mr-4 hidden md:flex">
           <span className="text-white font-bold leading-tight">
             Jadwal Kelas {kelasList.length > 0 ? (kelasList.find(k => k.id === selectedKelas)?.name || 'Tidak Ditemukan') : 'Memuat...'}

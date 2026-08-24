@@ -2,11 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Breadcrumb, Button, App } from 'antd';
-import { 
-  SaveOutlined, 
+import { SaveOutlined, 
   ArrowLeftOutlined,
-  CheckCircleOutlined
-} from '@ant-design/icons';
+  CheckCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 
@@ -29,8 +27,7 @@ export default function CatatanWaliKelasDetailPage() {
   const [kelasName, setKelasName] = useState<string>('...');
   const [data, setData] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
       try {
         // Ambil nama kelas
         const kelasList = await kelasService.findAll();
@@ -63,6 +60,7 @@ export default function CatatanWaliKelasDetailPage() {
       }
     };
 
+  useEffect(() => {
     fetchData();
   }, [kelasId, message]);
 
@@ -160,6 +158,10 @@ export default function CatatanWaliKelasDetailPage() {
       </div>
 
       <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchData} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
         <Button 
           icon={<ArrowLeftOutlined />} 
           onClick={() => router.push('/penilaian/catatan-wali-kelas')}

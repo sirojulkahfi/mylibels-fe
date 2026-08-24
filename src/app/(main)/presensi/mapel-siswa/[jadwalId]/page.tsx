@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, use } from 'react';
 import { Table, Button, Breadcrumb, App, Tag, Radio, Space } from 'antd';
-import { ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, SaveOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -21,8 +21,7 @@ export default function PresensiMapelDetail({ params }: { params: Promise<{ jadw
   const unwrappedParams = use(params);
   const jadwalId = unwrappedParams.jadwalId;
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
       try {
         // Ambil info jadwal untuk melihat kelas mana
         const jadwalList = await akademikService.findAllJadwal().catch(() => []);
@@ -46,6 +45,7 @@ export default function PresensiMapelDetail({ params }: { params: Promise<{ jadw
       }
     };
 
+  useEffect(() => {
     fetchData();
   }, [jadwalId]);
 
@@ -127,6 +127,10 @@ export default function PresensiMapelDetail({ params }: { params: Promise<{ jadw
       </div>
 
       <ToolbarWrapper>
+        <Button icon={<ReloadOutlined />} onClick={fetchData} loading={loading} type="default" className="mr-2">
+          Muat Ulang
+        </Button>
+        
         <Space>
           <Button 
             type="text" 
