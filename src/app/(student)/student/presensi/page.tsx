@@ -44,7 +44,7 @@ export default function StudentPresensiPage() {
 
   // Calculate stats
   const total = data.length || 1; // prevent div zero
-  const hadir = data.filter((d: any) => d.status === 'Hadir').length;
+  const hadir = data.filter((d: any) => d.status === 'Hadir' || d.status === 'Terlambat').length;
   const percentage = data.length > 0 ? Math.round((hadir / data.length) * 100) : 0;
   const izin = data.filter((d: any) => d.status === 'Izin').length;
   const sakit = data.filter((d: any) => d.status === 'Sakit').length;
