@@ -74,7 +74,6 @@ export default function Header({ collapsed, onToggle }: HeaderProps) {
           <BellOutlined style={{ fontSize: 18, color: 'white', cursor: 'pointer' }} />
         </Badge>
 
-        {/* Sekarang akan muncul: Hello, Wissa Gamma */}
         <span className="hidden md:inline-block text-white font-medium">
           Hello, {user?.name}
         </span>
