@@ -10,6 +10,7 @@ type ButtonToolbarProps = {
     children?: ReactNode;
     style?: CSSProperties;
     className?: string;
+    [key: string]: unknown; // allow Ant Design to forward event props (Popconfirm, Tooltip, etc.)
 };
 
 export default function ButtonToolbar({
@@ -22,6 +23,7 @@ export default function ButtonToolbar({
     children,
     style,
     className = "",
+    ...rest
 }: ButtonToolbarProps) {
     return (
         <span
@@ -36,6 +38,7 @@ export default function ButtonToolbar({
             }`}
             onClick={enable && !loading ? onClick : undefined}
             style={style}
+            {...rest}
         >
             {loading ? (
                 <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
