@@ -56,7 +56,7 @@ function LoginContent() {
           src="/images/main-bg.jpg"
           alt="Background"
           fill
-          className="object-cover object-center"
+          className="w-full h-full"
           priority
         />
         {/* Dark overlay for better contrast without blur */}
