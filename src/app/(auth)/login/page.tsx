@@ -74,7 +74,7 @@ function LoginContent() {
           src="/images/main-bg.webp"
           alt="Background"
           fill
-          className="object-cover object-center"
+          className="object-contain object-center"
           priority
         />
         {/* Dark overlay for better contrast without blur */}
