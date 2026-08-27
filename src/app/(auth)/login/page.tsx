@@ -7,7 +7,6 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { UserOutlined, LockOutlined, EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 
 import { authService } from "@/services/auth.service";
-import { settingsService } from "@/services/system/settings.service";
 import { useAuthStore } from "@/store/useAuthStore";
 import { getDashboardRoute } from "@/utils/dashboard-route";
 
@@ -22,23 +21,6 @@ function LoginContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sessionExpired, setSessionExpired] = useState(false);
-  const [appVersion, setAppVersion] = useState("1.0.0");
-
-  useEffect(() => {
-        const fetchSettings = async () => {
-      try {
-        const res = await settingsService.findAll();
-        const list = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
-        const versionSetting = list.find((s: any) => s.key === "VERSION" || s.key === "APP_VERSION");
-        if (versionSetting) {
-          setAppVersion(versionSetting.value);
-        }
-      } catch (error) {
-        console.error("Failed to fetch app version from settings:", error);
-      }
-    };
-    fetchSettings();
-  }, []);
 
   useEffect(() => {
     sessionStorage.removeItem("processing401");
@@ -74,7 +56,7 @@ function LoginContent() {
           src="/images/main-bg.webp"
           alt="Background"
           fill
-          className="object-contain object-center"
+          className="object-cover object-center"
           priority
         />
         {/* Dark overlay for better contrast without blur */}
@@ -207,7 +189,7 @@ function LoginContent() {
                 &copy; {new Date().getFullYear()} SMPN 15 Bandung.<br className="md:hidden" /> All rights reserved.
               </p>
               <p className="text-[10px] text-gray-400">
-                Versi {appVersion}
+                Versi 1.2.5
               </p>
               <p className="text-[10px] text-white italic">
                 Aplikasi ini dikembangkan oleh Sirojul Kahpi (RJL DevOps)
