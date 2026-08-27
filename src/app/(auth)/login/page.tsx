@@ -53,7 +53,7 @@ function LoginContent() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0 bg-[#0f172a]">
         <Image
-          src="/images/main-bg.webp"
+          src="/images/main-bg.jpg"
           alt="Background"
           fill
           className="object-cover object-center"
